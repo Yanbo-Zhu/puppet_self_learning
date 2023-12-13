@@ -144,5 +144,105 @@ Node.2 (CentOS)
 下集待續 ...
 
 
+# 2 Configure agents
 
+Once you have installed your agents, you must complete the following three configuration steps.
+
+## 2.1 Configure your `PATH` to access Puppet commands
+
+Puppet's command line interface (CLI) consists of a [single Puppet command with many subcommands](https://puppet.com/docs/puppet/5.5/services_commands), for example `puppet --help`.
+
+Puppet commands are located in the bin directory — `/opt/puppetlabs/bin/` on *nix and `C:\Program Files\Puppet Labs\puppet\bin` on Windows. The bin directory is not in your `PATH` environment variable by default. To have access to the Puppet commands, you must add the bin directory to your `PATH`.
+
+Choose from the following options.
+
+### 2.1.1 Linux: source a script for puppet-agent to install
+
+If you are on Linux, you can source a script that `puppet-agent` installs. Run the following command:
+
+```
+source /etc/profile.d/puppet-agent.sh
+```
+
+### 2.1.2 *nix: Add the Puppet labs bin directory to your **PATH**
+
+To add the bin directory to your `PATH` on *nix, run:
+
+```
+export PATH=/opt/puppetlabs/bin:$PATH
+```
+
+Alternatively, you can add this location wherever you configure your `PATH`, such as your `.profile` or `.bashrc` configuration files.
+
+### 2.1.3 Windows: Add the Puppet labs bin directory to your **PATH**
+
+To run Puppet commands on `Windows`, start a command prompt with administrative privileges. You can do so by right-clicking the Start Command Prompts with Puppet program and clicking Run as administrator. Click Yes if the system asks for UAC confirmation.
+
+The Puppet agent `.msi` adds the Puppet bin directory to the system path automatically. If you are not using the Start Command Prompts, you may need to manually add the bin directory to your PATH using one of the following commands:
+
+For cmd.exe, run:
+
+```
+set PATH=%PATH%;"C:\Program Files\Puppet Labs\Puppet\bin"
+```
+
+For PowerShell, run:
+
+```
+ $env:PATH += ";C:\Program Files\Puppet Labs\Puppet\bin" 
+```
+
+## 2.2 Configure the `server` setting
+
+The `server` is setting, which allows you to connect the agent to the primary Puppet server, is the only mandatory setting.
+
+You can add configuration to agents by using the `puppet config set` sub-command, which edits puppet.conf automatically, or editing `/etc/puppetlabs/puppet/puppet.conf` directly.
+
+To configure the `server` setting, choose from one of the following options:
+
+- On the agent node, run:
+    
+    ```
+    puppet config set server puppetserver.example.com --section main
+    ```
+    
+- Manually edit `/etc/puppetlabs/puppet/puppet.conf` or `C:\ProgramData\PuppetLabs\puppet\etc\puppet.conf`.
+    
+    Note that the location on Windows depends on whether you are running with administrative privileges. If you are not, it will be in home directory, not system location.
+    
+
+Results
+
+This command adds the setting `server = puppetserver.example.com` to the `[main]` section of puppet.conf.
+
+Note that there are other optional settings, for example, `serverport`, `ca_server`, `ca_port`, `report_server`, `report_port`, which you might need for more complicated Puppet deployments, such as when using a CA server and multiple compilers.
+
+## 2.3 Connect the agent to the primary server and sign the certificate
+
+Once you had added the `server`, you must connect the Puppet agent to the primary server so that it will check in at regular intervals to report its state, retrieve its catalog, and update its configuration if needed.
+
+1. To connect the agent to the primary server, run:
+    ```
+    puppet ssl bootstrap
+    ```
+    
+    Note: For Puppet 5 agents, run `puppet agent --test` instead.
+    
+    You will see a message that looks like:
+    
+    ```
+    Info: Creating a new RSA SSL key for <agent node>
+    ```
+    
+2. On the primary server node, sign the certificate:
+    
+    ```
+    sudo puppetserver ca sign --certname <name>
+    ```
+    
+3. On the agent node, run the agent again:
+    
+    ```
+    puppet ssl bootstrap
+    ```
 

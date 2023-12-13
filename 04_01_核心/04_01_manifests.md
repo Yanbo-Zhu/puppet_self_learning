@@ -16,6 +16,9 @@ Puppet 是用 manifests 來管理每一個 node 要做的事情，透過 Catalog
 
 ![puppet-catalog](./images/puppet-catalog.png)
 
+
+![](image/Pasted%20image%2020231211231801.png)
+
 Master 和 Agent 之間取得佈署清單流程：
 
 1. Agent 索要 catalog:  Agent 內容包含 certname (節點名稱) 和 facts (由 facter  所獲取的系統參數)
