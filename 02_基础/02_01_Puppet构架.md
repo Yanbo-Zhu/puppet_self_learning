@@ -15,6 +15,8 @@
 
 ## 1.1 Master / Agent
 
+![](image/Pasted%20image%2020231214165137.png)
+
 ![puppetmaster-agent](../images/puppetmaster-agent.png)
 
 基於 `pull-based` 的架構 (官方建議)

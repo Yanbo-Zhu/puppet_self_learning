@@ -1,6 +1,8 @@
 
+# 1 What is Puppet 
 
-# 1 Day 4 - 你不能不知道的 Puppet 小常識
+![](image/Pasted%20image%2020231214164811.png)
+# 2 Day 4 - 你不能不知道的 Puppet 小常識
 
 本系列文資料可參考以下：
 
@@ -12,15 +14,15 @@
 
 這篇要來帶大家認識在使用 Puppet 之前，你不可不知的小常識
 
-## 1.1 各種 Puppet 名詞
+## 2.1 各種 Puppet 名詞
 
-### 1.1.1 Domain
+### 2.1.1 Domain
 
 第一件事情就是要講 Domain，Domain 在 Puppet 的世界非常重要，**所有 Node 都必須擁有自己的 Domain**，由於 Puppet 和 Node 之間的 trust 是使用 CA 憑證，所以跟 Node 之間會換發憑證，這個動作就需要 Domain 的存在，如果 Master / Node 更換 Domain 那麼你的憑證就會信任失敗，這時所有的 Deploy 都將失敗。
 
 ---
 
-### 1.1.2 [Catalogs](https://puppet.com/docs/puppet/5.3/subsystem_catalog_compilation.html)
+### 2.1.2 [Catalogs](https://puppet.com/docs/puppet/5.3/subsystem_catalog_compilation.html)
 
 Puppet 會把 Node 所需要的設定封裝成 Catalogs，再由 Node 將 Catalogs 解析後 Deploy，Catalogs 又分為兩個階段來 Deploy catalogs：
 
@@ -31,19 +33,19 @@ Puppet 會把 Node 所需要的設定封裝成 Catalogs，再由 Node 將 Catalo
 
 ---
 
-### 1.1.3 [Node](https://puppet.com/docs/puppet/5.3/lang_node_definitions.html)
+### 2.1.3 [Node](https://puppet.com/docs/puppet/5.3/lang_node_definitions.html)
 
 Node 通稱為**被佈署的節點**，即是 catalog apply 的最終目標。
 
 ---
 
-### 1.1.4 [Resource](https://puppet.com/docs/puppet/5.3/type.html)
+### 2.1.4 [Resource](https://puppet.com/docs/puppet/5.3/type.html)
 
 身為一個 Puppet 的 Developer 你不能不知道 Resource，Resource 是用來定義**系統資源**的基本元件，例如 file、service、package .. 等等這類的東西。
 
 ---
 
-### 1.1.5 [Hiera](https://puppet.com/docs/puppet/5.3/hiera_intro.html)
+### 2.1.5 [Hiera](https://puppet.com/docs/puppet/5.3/hiera_intro.html)
 
 Hiera 是 Puppet 內建的數據查找系統，透過 Three layout 架構並且實現 `defaults, with overrides` 在不同的環境給予不同的參數，讓 Node 可以找到適合自己的值 (例如：在 Dev 時取到的參數和 Production 的不同)
 
@@ -51,17 +53,17 @@ Hiera 是 Puppet 內建的數據查找系統，透過 Three layout 架構並且�
 
 ---
 
-### 1.1.6 [Facter](https://puppet.com/docs/puppet/5.3/lang_facts_and_builtin_vars.html)
+### 2.1.6 [Facter](https://puppet.com/docs/puppet/5.3/lang_facts_and_builtin_vars.html)
 
 Facter 是 Puppet 的小幫手，Facter 會隨著 Puppet agent 安裝在 Node 裡面，並且協助 Puppet 收集 Node 的系統資源。
 
 ---
 
-### 1.1.7 [Manifest](https://puppet.com/docs/puppet/5.3/lang_summary.html)
+### 2.1.7 [Manifest](https://puppet.com/docs/puppet/5.3/lang_summary.html)
 
 Manifest 是 Puppet 的倉庫，所有的 Resource 都會在 manifest 裡面去定義，就好比 Ansible 的 playbook。
 
-## 1.2 Puppet 的 3, 4, 5 版本
+## 2.2 Puppet 的 3, 4, 5 版本
 
 在目前 Internet 上能找到的資料大概就是 3-5 這幾個版本，但對於這些版本的差異也必須要有認知，否則你在參考網路上的資訊時就會浪費非常多寶貴的時間。
 
