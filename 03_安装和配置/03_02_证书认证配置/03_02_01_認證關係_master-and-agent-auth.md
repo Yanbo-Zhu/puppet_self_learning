@@ -1,6 +1,19 @@
 
 
-# 1 Day 7 - MASTER 和 AGENT 的認證關係
+# 1 总览
+
+Agent 通过标准的 SSL 加密认证的方式与 Master 建立连接，获取本机需要的配置信息。
+puppet的agent和master之间的数据传输是通过SSL证书认证完成的，具有服务端身份验证和数据传输加密功能
+
+在 Agent 未取得配置信息、或者已经达到配置状态时，Puppet 不会对系统进行改动，它只有在被要求的时候才修改系统，这是 Puppet 的一个关键特征，称为幂等性（Idempotency），这个修改过程称为一次配置运行（Configuration run）。
+
+![](image/Pasted%20image%2020231215211441.png)
+
+
+![](image/Pasted%20image%2020231215211445.png)
+
+
+# 2 Day 7 - MASTER 和 AGENT 的認證關係
 
 本系列文資料可參考以下：
 
@@ -59,7 +72,7 @@ CA 憑證可以是由外部頒發，或是自簽 CA，但通常會直接讓 Pupp
 - 依照政策的簽署 (Policy-based Autosigning)
 - 透過 API 簽署 (Policy executable API)
 
-## 1.1 自動簽署 (Naive Autosigning)
+## 2.1 自動簽署 (Naive Autosigning)
 
 在自動簽署中是最不安全的簽署方式，當使用 Naive Autosigning 的話，所有的 Agent CSR 要求皆會自動同意簽署，這並不適合用在正式環境，但相對的用於測試環境是非常方便。
 
@@ -72,7 +85,7 @@ $ vim /etc/puppetlabs/puppet/puppet.conf
 autosign = true
 ```
 
-## 1.2 白名單簽署 (Basic Autosigning)
+## 2.2 白名單簽署 (Basic Autosigning)
 
 Basic Autosigning 是繼承 Naive Autosigning 的概念在加上白名單限制，你可以針對 Agent 所申請的 domain 進行白名單限制，例如 *.example.com，你可以用 autosign.conf 將這些清單寫入
 
@@ -88,20 +101,20 @@ $ vim /etc/puppetlabs/puppet/autosign.conf
 ami.puppet.com
 ```
 
-## 1.3 依照政策的簽署 (Policy-based autosigning)
+## 2.3 依照政策的簽署 (Policy-based autosigning)
 
 在 Policy-based autosigning 中你可以定義 Policy 簽署的條件，在 Agent 發出的 csr 請求中動手腳，加入一些可以提供驗證的資訊 (embedding additional data)，如 Password, token … etc，再由 Master 觸發 autosign 所執行的 script 進行驗證，這個 scirpt 不限語言，只要 return 給 Puppet 0 or 1 就行。
 
 Puppet 官方極力推薦使用 Policy-based autosigning 這種方式進行驗證，是目前最安全且彈性的作法，甚至可以把 Policy-based autosigning 當成一個 trigger 去做許多事件。
 
-## 1.4 透過 API 簽署  (Policy executable API)
+## 2.4 透過 API 簽署  (Policy executable API)
 
 延伸 Policy-based autosigning 概念的作法，你也可以透過 API 進行簽署認證，這個可以應用到更多的地方，但目前小弟還沒有實際應用。
 
 
 
 
-### 1.4.1 Reference
+### 2.4.1 Reference
 - [SSL configuration: autosigning certificate requests](https://docs.puppet.com/puppet/5.3/config_ssl_external_ca.html)
 
 
