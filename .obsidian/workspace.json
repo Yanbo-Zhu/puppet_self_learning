@@ -25,14 +25,26 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "99_librarian-puppet/01_总览.md",
+                "file": "99_librarian-puppet/02_使用手册.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "790d0b61fc00afea",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "95_PuppetCLI/95_01_CoreTools/95_01_CoreTools.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -98,7 +110,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "99_librarian-puppet/01_总览.md",
+                "file": "95_PuppetCLI/95_01_CoreTools/95_01_CoreTools.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +127,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "99_librarian-puppet/01_总览.md",
+                "file": "95_PuppetCLI/95_01_CoreTools/95_01_CoreTools.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -148,7 +160,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "99_librarian-puppet/01_总览.md"
+                "file": "95_PuppetCLI/95_01_CoreTools/95_01_CoreTools.md"
               }
             }
           }
@@ -171,11 +183,34 @@
       "workspaces:管理工作区布局": false
     }
   },
-  "active": "b436ebc0541476c0",
+  "active": "790d0b61fc00afea",
   "lastOpenFiles": [
+    "95_PuppetCLI/95_01_CoreTools",
+    "95_PuppetCLI/95_02_puppetserver Command.md",
+    "95_PuppetCLI/95_01_CoreTools/95_01_CoreTools.md",
+    "95_PuppetCLI/95_01_CLI 总览.md",
+    "95_PuppetCLI/puppetserver Command",
+    "95_PuppetCLI/image/Pasted image 20231216154124.png",
+    "95_PuppetCLI/image",
+    "96_PuppetDevelopmentKit_PDK/96_02_CLI.md",
+    "95_PuppetCLI",
+    "96_PuppetDevelopmentKit_PDK/image/Pasted image 20231216153755.png",
+    "96_PuppetDevelopmentKit_PDK/96_01_安装.md",
+    "96_PuppetDevelopmentKit_PDK/image/Pasted image 20231216153606.png",
+    "96_PuppetDevelopmentKit_PDK/image",
+    "98_puppet_test_tools/98_01_.md",
+    "96_PuppetDevelopmentKit_PDK",
+    "97_PuppetDB/01_PuppetQueryLanguage_PQL.md",
+    "99_librarian-puppet/02_使用手册.md",
+    "97_PuppetDB",
+    "99_librarian-puppet/image/Pasted image 20231216152829.png",
+    "99_librarian-puppet/03_常用命令.md",
+    "99_librarian-puppet/01_总览.md",
+    "99_librarian-puppet/image/Pasted image 20231216152405.png",
+    "99_librarian-puppet/image/Pasted image 20231216152349.png",
+    "99_librarian-puppet/image",
     "06_Puppet_Language/06_01_Resource/06_01_01_resource-ordering.md",
     "06_Puppet_Language/06_01_Resource/06_01_02_simple-resource-类型.md",
-    "99_librarian-puppet/01_总览.md",
     "05_Module/05_03_Module file structure.md",
     "05_Module/05_02_modules的筛选.md",
     "05_Module/05_01_例子.md",
@@ -184,13 +219,7 @@
     "02_基础/image/Pasted image 20231215213119.png",
     "02_基础/image/Pasted image 20231215213100.png",
     "02_基础/image/Pasted image 20231215213052.png",
-    "02_基础/image/Pasted image 20231215213031.png",
-    "02_基础/image/Pasted image 20231215212950.png",
-    "02_基础/image/Pasted image 20231215212843.png",
-    "02_基础/image/Pasted image 20231215212835.png",
-    "02_基础/image/Pasted image 20231215212731.png",
     "03_安装和配置/03_02_证书认证配置/03_02_01_認證關係_master-and-agent-auth.md",
-    "03_安装和配置/03_02_证书认证配置/image/Pasted image 20231215211445.png",
     "03_安装和配置/03_02_证书认证配置/image",
     "03_安装和配置/03_01_安装/03_01_02_PuppetAgent安装.md",
     "02_基础/02_01_Puppet构架.md",
@@ -201,23 +230,6 @@
     "02_基础/02_04_工作模型.md",
     "02_基础/image",
     "03_安装和配置/03_01_安装/03_01_03_design-cronjob_Agent和Server 同步.md",
-    "03_安装和配置/03_01_安装/03_01_01_PuppetMaster安裝.md",
-    "01_总览/01_03_学习资料.md",
-    "01_总览/image",
-    "01_总览/01_02_证书考试.md",
-    "01_总览/01_01_总览.md",
-    "04_01_核心/image",
-    "98_puppet_test_tools/98_01_.md",
-    "98_puppet_test_tools",
-    "07_hiera/07_01_hiera_data.md",
-    "04_01_核心/04_02_role_profile_架构.md",
-    "99_librarian-puppet",
-    "08_Platform_components/08_01_Factor/08_01_01_Factor.md",
-    "08_Platform_components/08_01_Factor/images",
-    "08_Platform_components/08_01_Factor",
-    "06_Puppet_Language/06_01_Resource/06_01_04_how-to-use-templates.md",
-    "08_Platform_components",
-    "06_Puppet_Language/06_01_Resource/06_01_03_resource-file-system.md",
-    "07_hiera/07_02_how-to-encrypt-hiera-data.md"
+    "03_安装和配置/03_01_安装/03_01_01_PuppetMaster安裝.md"
   ]
 }
