@@ -1,0 +1,182 @@
+
+
+# Module file structure
+
+https://www.puppet.com/docs/pdk/3.x/pdk_creating_modules
+
+PDK creates a basic module skeleton with directories and templates to support writing, validating, and testing Puppet code. 
+
+|Files and directories|Description|
+|---|---|
+|Module directory|Directory with the same name as the module. Contains all of the module's files and directories.|
+|`appveyor.yml`|File containing configuration for Appveyor CI integration.|
+|`CHANGELOG.md`|File in which you can document notable changes to this project.|
+|`.devcontainer`|File describing how a container should be configured to test this module.|
+|`./files`|Directory containing static files, which managed nodes can download.|
+|`.fixtures.yml`|File specifying where test dependencies are loaded from.|
+|`Gemfile`|File describing Ruby gem dependencies.|
+|`.gitattributes`|Recommended defaults for using Git.|
+|`.gitignore`|File listing module files that Git should ignore.|
+|`.gitlab-ci.yml`|File containing an example configuration for GitLab CI.|
+|`./manifests`|Directory containing module manifests, each of which defines one class or defined type. PDK creates manifests when you create new classes or defined types with `pdk` commands.|
+|`metadata.json`|File containing metadata for the module.|
+|`.pdkignore`|File listing module files that PDK should ignore when building a module package for upload to the Forge.|
+|`puppet-lint.rc`|File containing configuration for puppet-lint.|
+|`Rakefile`|File containing configuration for the Ruby infrastructure. Used in CI and for backwards compatibility.|
+|`README.md`|File containing a README template for your module.|
+|`.rspec`|File containing the default configuration for RSpec.|
+|`.rubocop.yml`|File containing recommended settings for Ruby style checking.|
+|`./spec`|Directory containing files and directories for unit testing.|
+|`spec/default_facts.yml`|File specifying facts that are available to all tests.|
+|`spec/spec_helper.rb`|Helper code to set up preconditions for unit tests.|
+|`./spec/classes`|Directory containing testing templates for any classes you create with the `pdk new class` command.|
+|`.sync.yml`|File to customize the PDK template in use.|
+|`./tasks`|Directory containing task files and task metadata files for any tasks you create with the `pdk new task`command.|
+|`./templates`|Directory containing any ERB or EPP templates. Required when building a module to upload to the Forge.|
+|`.vscode`|Directory containing configuration for Visual Studio code.|
+|`.yardopts`|File containing the default configuration for Puppet Strings.|
+
+----
+
+
+[https://puppet.com/docs/puppet/7/modules_fundamentals.html#module-structure](https://puppet.com/docs/puppet/7/modules_fundamentals.html#module-structure)
+
+data/
+Contains data files specifying parameter defaults.
+
+examples/
+Contains examples showing how to declare the module's classes and defined types.
+
+	init.pp: The main class of the module.
+	example.pp: Provide examples for major use cases.
+
+facts.d/
+Contains external facts, which are an alternative to Ruby-based custom facts. These are synced to all agent nodes, so they can submit values for those facts to the primary Puppet server.
+
+files/
+Contains static files, which managed nodes can download.
+
+	files/service.conf
+	This file's source => URL is puppet:///modules/my_module/service.conf. Its contents can also be accessed with the file function, such as content => file('my_module/service.conf').
+
+functions/
+Contains custom functions written in the Puppet language.
+
+lib/
+Contains plug-ins, such as custom facts and custom resource types. These are used by both the primary Puppet server and the Puppet agent, and they are synced to all agent nodes in the environment on each Puppet run.
+
+	lib/facter/
+	Contains custom facts, written in Ruby.
+	
+	lib/puppet/
+	Contains custom functions, resource types, and resource providers:
+
+		lib/puppet/functions/: Contains functions written in Ruby for the modern Puppet::Functions API.
+		lib/puppet/parser/functions/: Contains functions written in Ruby for the legacy Puppet::Parser::Functions API.
+		lib/puppet/provider/: Contains custom resource providers written in the Puppet language.
+		lib/puppet/type/: Contains custom resource types written in the Puppet language.
+
+locales/
+Contains files relating to module localization into languages other than English.
+
+manifests/
+Contains all of the manifests in the module.
+
+	manifests/init.pp
+	The init.pp class, if used, is the main class of the module. This class's name must match the module's name.
+	
+	manifests/other_class.pp
+	Classes and defined types are named with the namespace of the module and the name of the class or defined type. For example, this class is named my_module::other_class.
+	
+	manifests/implementation/
+	You can group related classes and defined types in subdirectories of the manifests/ directory. The name of this subdirectory is reflected in the names of the classes and types it contains. Classes and defined types are named with the namespace of the module, any subdirectories, and the name of the class or defined type.
+
+		manifests/implementation/my_defined_type.pp: This defined type is named my_module::implementation::my_defined_type.
+		manifests/implementation/class.pp: This defined type is named my_module::implementation::class.
+
+plans/
+Contains Puppet task plans, which are sets of tasks that can be combined with other logic. Plans are written in the Puppet language.
+
+readmes/
+The module's README localized into languages other than English.
+
+spec/
+Contains spec tests for any plug-ins in the lib directory.
+
+tasks/
+Contains Puppet tasks, which can be written in any programming language that can be read by the target node.
+
+templates/
+Contains templates, which the module's manifests can use to generate content or variable values.
+
+	templates/component.erb
+	A manifest can render this template with template('my_module/component.erb').
+	
+	templates/component.epp
+	A manifest can render this template with epp('my_module/component.epp').
+
+types/
+Contains resource type aliases.
+
+
+# Manifests
+
+Manifests, contained in the module's `manifests/` folder, each contain one class or defined type.
+
+The `init.pp` manifest is the main class of a module and, unlike other classes or defined types, it is referred to only by the name of the module itself. 
+For example, the class in `init.pp` in the `puppetlabs-motd` module is the `motd` class. You cannot name a class `init`.
+
+All other classes or defined types names are composed of name segments, separated from each other by a namespace separator, `::`
+- The module short name, followed by the namespace separator.
+- Any `manifests/` subdirectories that the class or defined type is contained in, followed by a namespace separato.
+- The manifest file name, without the extension.
+    
+
+For example, each module class or defined type would have the following names based on their module name and location within the `manifests/` directory:
+
+|Module name|Filepath to class or defined type|Class or defined type name|
+|---|---|---|
+|`username-my_module`|`my_module/manifests/init.pp`|`my_module`|
+|`username-my_module`|`my_module/manifests/other_class.pp`|`my_module::other_class`|
+|`puppetlabs-apache`|`apache/manifests/security/rule_link.pp`|`apache::security::rule_link`|
+|`puppetlabs-apache`|`apache/manifests/fastcgi/server.pp`|`apache::fastcgi::server`|
+
+
+# Files in modules
+
+You can serve files from a module's `files/` directory to agent nodes.
+Download files to the agent by setting the `file` resource's `source` attribute to the `puppet:///` URL for the file. Alternately, you can access module files with the `file` function.
+
+To download the file with a URL, use the following format for the `puppet:///` URL:
+```
+puppet:///<MODULE_DIRECTORY>/<MODULE_NAME>/<FILE_NAME>
+```
+
+For example, given a file located in `my_module/files/service.conf`, the URL is:
+```
+puppet:///modules/my_module/service.conf
+```
+
+To access files with the `file` function, pass the reference `<MODULE NAME>/<FILE NAME>` to the function, which returns the content of the requested file from the module's `files/` directory. 
+Puppet URLs work for both `puppet agent` and `puppet apply`; in either case they retrieve the file from a module.
+
+To learn more about the `file` function, see the [function reference](https://www.puppet.com/docs/puppet/7/function).
+
+# Templates in modules
+
+You can use ERB or EPP templates in your module to manage the content of configuration files. Templates combine code, data, and literal text to produce a string output, which can be used as the content attribute of a `file` resource or as a variable value. 
+
+Templates are contained in the module's `templates/` directory.
+
+For ERB templates, which use Ruby, use the `template` function. For EPP templates, which use the Puppet language, use the `epp` function. See the page about [templates](https://www.puppet.com/docs/puppet/7/lang_template "Templates are written in a specialized templating language that generates text from data. Use templates to manage the content of your Puppet configuration files via the content attribute of the file resource type.") for detailed information.
+
+The `template` and `epp` functions look up templates identified by module and template name, passed as a string in parentheses: `function('module_name/template_name.extension')`. For example:
+
+```
+template('my_module/component.erb')
+```
+
+```
+epp('my_module/component.epp')
+```
+
