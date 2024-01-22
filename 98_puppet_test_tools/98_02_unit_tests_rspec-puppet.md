@@ -1,5 +1,29 @@
 https://confluence.ivu.de/display/SYS/How+to+write+unit+tests+for+Puppet+modules
 
+https://www.puppet.com/docs/puppet/7/bgtm#writing_modules_overview-modules-containment
+
+# 总览
+
+Test your module to make sure that it works in a variety of conditions and that its options and parameters work together. PDK includes tools for validating and running unit tests on your module, including RSpec, RSpec Puppet, and Puppet Spec Helper.
+
+Write unit tests to verify that your module works as intended in a variety of circumstances. For example, to ensure that the module works in different operating systems, write tests that call the `osfamily` fact to verify that the package and service exist in the catalog for each operating system your module supports.
+
+To learn more about how to write unit tests, see the [RSpec testing tutorial](http://rspec-puppet.com/tutorial). For more information on testing tools, see the tools list below.
+
+rspec-puppet
+
+	Extends the RSpec testing framework to understand and work with Puppet catalogs, the artifact it specializes in testing. This allows you to write tests that verify that your module works as intended. This tool is included in PDK.
+	
+	For example, you can call facts, such as `osfamily`, with RSpec, iterating over a list of operating systems to make sure that the package and service exist in the catalog for every operating system your module supports.
+	
+	To learn more about `rspec-puppet` use and unit testing, see the [rspec-puppet page](http://rspec-puppet.com/).
+
+puppetlabs_spec_helper
+
+	Automates some of the tasks required to test modules. This is especially useful in conjunction with `rspec-puppet`, because `puppetlabs_spec_helper` provides default Rake tasks that allow you to standardize testing across modules. It also provides some code to connect `rspec-puppet` with modules. This tool is included in PDK.
+	
+	To learn more, see the [puppetlabs_spec_helper](https://github.com/puppetlabs/puppetlabs_spec_helper) project.
+
 # 1 **What are unit tests**
 
 Contrary to [acceptance tests](https://confluence.ivu.de/display/SYS/How+to+write+acceptance+tests+for+puppet+modules), executing unit tests for a puppet module does not imply installing this module on a real machine. Unit testing a module means testing it in a sandbox to check if it compiles succesfully on the basis of given facts. Because, during unit testing, the module has no access to a real system, facts about the operating system on which the installation would normally take place are mocked.
