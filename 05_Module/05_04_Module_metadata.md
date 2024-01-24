@@ -4,8 +4,6 @@ https://www.puppet.com/docs/puppet/8/modules_metadata.html
 The `metadata.json` file is located in the module's main directory, outside any subdirectories.
 The metadata.json file uses standard JSON syntax and contains a single JSON object, mapping keys to values
 
-
-
 # metadata.json example 
 
 ```json
@@ -173,3 +171,24 @@ Optionally, you can add tags to your metadata to help users find your module in 
 Pass tags as an array, like `["msyql", "database", "monitoring"]`.
 
 Tags cannot contain whitespace. Certain tags are prohibited, such as profanity or tags resembling the `$::operatingsystem` fact (such as `"redhat"`, `"rhel"`, `"debian"`, `"` `windows"`, or `"osx"`). Use of prohibited tags lowers your module's quality score on the Forge.
+
+
+# Available `metadata.json` keys
+
+Required and optional `metadata.json` keys specify metadata for your module.
+
+|Key|Required?|Value|Example|
+|---|---|---|---|
+|`` `"name"` ``|Required.|The full name of your module, including your Forge username, in the format `username-module`.|``"`puppetlabs-stdlib`"``|
+|`"version"`|Required.|The current version of your module. This must follow semantic versioning. For details, see the [Semantic Versioning specification](http://semver.org/spec/v1.0.0.html).|`"1.2.1`"|
+|`"author"`|Required.|The person who gets credit for creating the module. If absent, this key defaults to the username portion of the name key.|`"puppetlabs`"|
+|`"license"`|Required.|The license under which your module is made available. License metadata must match an identifier provided by SPDX. For a complete list, see the [SPDX license list](https://spdx.org/licenses/).|"`Apache-2.0`"|
+|`"summary"`|Required.|A one-line description of your module.|`"Standard library of resources for Puppet modules."`|
+|`"source"`|Required.|The source repository for your module.|`"https://github.com/puppetlabs/puppetlabs-stdlib"`|
+|`"dependencies"`|Required.|An array of other modules that your module depends on to function. If the module has no dependencies, pass an empty array. See the related topic about specifying dependencies for more details.|```<br>"dependencies": [<br>    {<br>      "name": "puppetlabs/stdlib",<br>      "version_requirement": ">= 4.13.1 < 6.0.0"<br>    }<br>],<br>```|
+|`"requirements"`|Optional.|A list of external requirements for your module, given as an array of hashes.|```<br>"requirements": [<br>    {<br>      "name": "puppet",<br>      "version_requirement": ">= 4.7.0 < 6.0.0"<br>    }<br>],<br>```|
+|`` `"project_page"` ``|Optional.|A link to your module's website, to be included on the module's Forge page.|`"https://github.com/puppetlabs/puppetlabs-stdlib"`|
+|`` `"issues_url"` ``|Optional.|A link to your module's issue tracker.|`"https://tickets.puppetlabs.com/browse/MODULES"`|
+|`` `"operatingsystem_support"` ``|Optional.|An array of hashes listing the operating systems that your module is compatible with. See the topic about specifying operating compatibility for details.|```<br>{<br>      "operatingsystem": "RedHat",<br>      "operatingsystemrelease": [<br>        "5",<br>        "6",<br>        "7"<br>      ]<br>}<br>```|
+|`` `"tags"` ``|Optional.|An array of four to six key words to help people find your module.|`["msyql", "database", "monitoring", "reporting"]`|
+

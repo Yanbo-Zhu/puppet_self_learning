@@ -124,8 +124,6 @@ apache::vhost {'homepages':
 Note:
 
 The `$title` and `$name` variables are both set to the defined type's name automatically, so they cannot be used as parameters.
-
-
 ## 4.1 `$title` and `$name`
 
 The `$title` and `$name` attributes are always available to a defined type and are not explicitly added to the definition. These attributes are both set to the defined type's name automatically:

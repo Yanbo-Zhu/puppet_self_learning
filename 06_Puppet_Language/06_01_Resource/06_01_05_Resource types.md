@@ -5,8 +5,6 @@ https://www.puppet.com/docs/puppet/8/resource_types
 
 `filebucket` , `overview`, `resources`, `schedule`, `tidy`
 
-
-
 Every resource (file, user, service, package, and so on) is associated with a resource type within the Puppet language. The resource type defines the kind of configuration it manages. This section provides information about the resource types that are built into Puppet.
 
 - **[Resource Type Reference (Single-Page)](https://www.puppet.com/docs/puppet/8/type)**  
