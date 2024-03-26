@@ -213,3 +213,11 @@ end
 
 "Errno::ENOENT: No such file or directory - git"
 try to install git on the system ("apt install git")
+
+
+
+
+# IVU 内部puppet module 的 unittest 
+
+[14:37] Florian Lamprecht
+https://git.ivu-ag.com/projects/PUPPET/repos/ivu_ptp_software/browse/spec/defines
