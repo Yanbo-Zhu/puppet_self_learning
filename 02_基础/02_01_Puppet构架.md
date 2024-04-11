@@ -69,10 +69,10 @@ puppet的C/S模式工作原理
 
 
 
-![puppet-catalog](06_01_Syntax_And_Setting_Puppet_Language/images/puppet-catalog.png)
+![puppet-catalog](06_01_Syntax_And_Settings_Puppet_Language/images/puppet-catalog.png)
 
 
-![](06_01_Syntax_And_Setting_Puppet_Language/images/Pasted%20image%2020231211231801.png)
+![](06_01_Syntax_And_Settings_Puppet_Language/images/Pasted%20image%2020231211231801.png)
 
 
 Manifest: 
