@@ -114,6 +114,10 @@ Node.2 (CentOS)
     $ sudo systemctl enable puppet
     ```
 
+启动 重启 puppet agent
+ /etc/init.d/puppet restart  或者 start
+
+
 ## 1.3 安裝 ( Agent Server 为 CentOS)
 
 步驟和 Ubuntu 安裝大致上相同，但是有幾個設定必須修改
@@ -135,7 +139,25 @@ Node.2 (CentOS)
 [apt-repository]: https://apt.puppetlabs.com/
 [puppet-conf]: https://docs.puppet.com/puppet/5.3/configuration.html
 
-## 1.4 回顧
+
+## 1.4 windows 中安装 puppet agent 
+
+安装包 
+我下载的是 
+puppet-agent-x64-latest.msi	2020-10-20 10:27:25	36.4MiB	
+下载位置 C:\Users\yzh\Downloads\puppet-agent-x64-latest.msi 
+
+
+安装时间 am 2022.09.07 安装的 
+安装位置  C:\Program Files\Puppet Labs\Puppet\
+![[03_Setup_Puppet_安装和配置/03_01_安装/images/Pasted image 20240412180514.png]]
+
+Path 中会自动加入 
+The installer adds Puppet commands to the PATH. After installing, you can run them from any command prompt (cmd.exe) or PowerShell prompt.
+`C:\Program Files\Puppet Labs\Puppet\bin`
+
+
+## 1.5 回顧
 
 從這篇我們安裝了兩台 Node Agent，這兩台 Node 每 2h 會向 Puppet Master 更新設定，但這邊有個小小的陷阱 ... 嘿嘿 !!
 

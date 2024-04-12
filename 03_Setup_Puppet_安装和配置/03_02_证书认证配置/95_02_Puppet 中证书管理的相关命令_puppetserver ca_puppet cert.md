@@ -55,7 +55,12 @@ puppetserver ca sign --all
 
 https://puppet.com/docs/puppet/5.5/man/cert.html
 
-puppet cert list --all	
-puppet cert clean <hostname>	puppet cert clean ip-172-31-27-12.us-west-2.compute.internal
+puppet cert list --all	查看正在申请 审批的证书 , 有可能为空 
+puppet cert clean `<hostname>`	puppet cert clean ip-172-31-27-12.us-west-2.compute.internal
+
+Puppet cert -s: 给 agent 端/ 某个客户端 颁发证书
+puppet cert --clean 主机名: 删除 对某个 主机 颁发的证书 
+
+![[03_Setup_Puppet_安装和配置/03_02_证书认证配置/images/Pasted image 20240412190632.png]]
 
 

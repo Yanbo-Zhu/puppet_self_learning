@@ -66,7 +66,7 @@ Rack Server 是由 Ruby 開發的 Web Service，將 HTTPS 請求重新格式化�
 - IP Address: 192.168.10.11
 - Domain : agent.puppet.com
 
-## 1.6 安裝 Puppet Server
+# 2 安裝 Puppet Server
 
 1. Puppet 針對所有的主機皆須定義為 Domain。
 
@@ -151,4 +151,31 @@ Rack Server 是由 Ruby 開發的 Web Service，將 HTTPS 請求重新格式化�
 [puppet-platform]: https://docs.puppet.com/puppet/5.3/puppet_platform.html
 [puppet-conf]: https://docs.puppet.com/puppet/5.3/configuration.html
 
+----
 
+安装 puppet-server 
+
+![[03_Setup_Puppet_安装和配置/03_01_安装/images/Pasted image 20240412170538.png]]
+
+可能出现的 问题
+![[03_Setup_Puppet_安装和配置/03_01_安装/images/Pasted image 20240412170547.png]]
+
+# 3 启动 puppet master
+
+1 防火墙需要先设置好 
+可以直接关闭防火墙， 这样就不影响puppet同步了 
+/etc/init.d/iptables stop
+![[03_Setup_Puppet_安装和配置/03_01_安装/images/Pasted image 20240412170339.png]]
+
+
+
+2  启动 puppet master  这个进程 
+```
+/etc/init.d/puppetmaster start 
+或者 
+/etc/init.d/puppetmaster restart 
+```
+
+
+3  检查  puppet master进程 是否正常启动
+![[03_Setup_Puppet_安装和配置/03_01_安装/images/Pasted image 20240412170404.png]]

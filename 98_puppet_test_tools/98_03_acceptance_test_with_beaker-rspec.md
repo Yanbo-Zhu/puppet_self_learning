@@ -33,8 +33,22 @@ It also presupposes that the files Gemfile and Rakefile exist (normally created 
 It is possible to run Hiera data to run the tests. In this case, the data can be stored in a config/data directory. The exact location of this file can be defined in the spec_helper_acceptance.rb file.
 
 
+# 2 介绍 
+是 rspec 跟 beaker 的橋樑，同時也集成 serverspec
+制造 虛擬環境
 
-# 2 Write the nodesets files
+
+beaker
+acceptance test 驗收測試是所有測試中的最後一環，對於 Puppet 中非常重要，因為 Puppet 提供多種不同 OS 環境的支援，但 Unit Test 僅能測試 function，但不同的環境上仍有疑慮，beaker 可以讓你在多個虛擬環境>中執行命令來進行 puppet 實際的佈署。
+gem 安裝 beaker
+$ gem install beaker
+
+serverspec
+serverspec 則是用來啟動虛擬環境，支援 Docker 和 Vagrant 來處理虛擬環境。
+gem 安裝 serverspec
+$ gem install serverspec
+
+# 3 Write the nodesets files
 
 大部分情况用 docker 去创建 node. 但有些情况 需要用到 vagrant 去 创建. 
 
@@ -60,7 +74,7 @@ For testing locally we typically use a vagrant node:
 
 With the option "box", we specify the vagrant box that will can be retrieved from the Vagrant Hub (the equivalent of the Docker Hub). In that case, we do not have to install extra software as it is included in the operating system. It is also possible to run tests with multiple hypervisors by placing one nodeset file per hypervisor in the nodeset directory (for example a vagrant.yml and a docker.yml file). When using the command "rake beaker", the default configuration is used (usually docker), otherwise it is necessary to specify the nodeset by running "rake beaker:vagrant"
 
-# 3 Write the spec_helper_acceptance file
+# 4 Write the spec_helper_acceptance file
 
 The only files to be affected by a change in hypervisor are the files included in the nodeset directory. The rest of the setup is specified in the spec_helper_acceptance.rb file and stays constant whatever the hypervisor. This file plays a similar role for acceptance tests as the file spec_helper.rb for unit tests. 
 It defines the configuration for the tests and particularly, in the *"before :suite"* part, the steps needed to prepare the SUT(s) before the tests are executed: which files should be copied on it, which dependencies installed etc. 
@@ -86,7 +100,7 @@ As some of the dependencies of the module ivu_monitoring are internal and can on
 ![[98_puppet_test_tools/images/acceptancehelper4.png]]
 
 
-# 4 Write the tests
+# 5 Write the tests
 
 When all the steps specified in the "before :suite" part of the RSpec configuration are executed, the tests that are stored in the folder "acceptance" are executed.
 
