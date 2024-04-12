@@ -2,6 +2,9 @@
 
 # 1 总览
 
+犹豫Puppet 客户端与服务器端之间是通过 SSL隧道通信的, 客户端安装完成后, 需要将服务器端申请证书 
+
+
 Agent 通过标准的 SSL 加密认证的方式与 Master 建立连接，获取本机需要的配置信息。
 puppet的agent和master之间的数据传输是通过SSL证书认证完成的，具有服务端身份验证和数据传输加密功能
 
@@ -118,5 +121,107 @@ Puppet 官方極力推薦使用 Policy-based autosigning 這種方式進行驗�
 - [SSL configuration: autosigning certificate requests](https://docs.puppet.com/puppet/5.3/config_ssl_external_ca.html)
 
 
+# 3 具体认证流程 
+
+## 3.1 客户端 向服务器端申请 证书 
+![[03_Setup_Puppet_安装和配置/03_02_证书认证配置/images/Pasted image 20240412190909.png]]
+
+--test 
+有绿色的信息证明 通信成功 
+![[03_Setup_Puppet_安装和配置/03_02_证书认证配置/images/Pasted image 20240412190917.png]]
 
 
+## 3.2 自动认证/自动颁发证书
+
+![[03_Setup_Puppet_安装和配置/03_02_证书认证配置/images/Pasted image 20240412190952.png]]
+
+在服务端开启自动认证，自动出则证书  服务器端就不必再分发证书了
+puppet.conf 中  Autosign = true 
+![[03_Setup_Puppet_安装和配置/03_02_证书认证配置/images/Pasted image 20240412191032.png]]
+
+![[03_Setup_Puppet_安装和配置/03_02_证书认证配置/images/Pasted image 20240412191039.png]]
+
+![[03_Setup_Puppet_安装和配置/03_02_证书认证配置/images/Pasted image 20240412191044.png]]
+
+现在两个端都删除已经有的证书 然后重新生成证书
+
+![[03_Setup_Puppet_安装和配置/03_02_证书认证配置/images/Pasted image 20240412191059.png]]
+
+新版本中 删除客户端的证书 puppet cert --clean 主机名
+![[03_Setup_Puppet_安装和配置/03_02_证书认证配置/images/Pasted image 20240412191115.png]]
+
+
+
+## 3.3 自动同步
+
+
+### 3.3.1 服务器端自动推送 
+
+![[03_Setup_Puppet_安装和配置/03_02_证书认证配置/images/Pasted image 20240412191328.png]]
+
+![[03_Setup_Puppet_安装和配置/03_02_证书认证配置/images/Pasted image 20240412191335.png]]
+
+![[03_Setup_Puppet_安装和配置/03_02_证书认证配置/images/Pasted image 20240412191340.png]]
+
+![[03_Setup_Puppet_安装和配置/03_02_证书认证配置/images/Pasted image 20240412191345.png]]
+
+![[03_Setup_Puppet_安装和配置/03_02_证书认证配置/images/Pasted image 20240412191350.png]]
+
+
+![[03_Setup_Puppet_安装和配置/03_02_证书认证配置/images/Pasted image 20240412191355.png]]
+
+
+在客户端执行 puppet kick -d hostnameofmachineWithPuppetAgent
+在客户端 执行某个命令 ， 从而实行 对某个 node 的配置和部署 
+![[03_Setup_Puppet_安装和配置/03_02_证书认证配置/images/Pasted image 20240412191410.png]]
+
+### 3.3.2 客户端自动同步
+
+![[03_Setup_Puppet_安装和配置/03_02_证书认证配置/images/Pasted image 20240412191423.png]]
+
+Etc/sysconfig/puppet 
+![[03_Setup_Puppet_安装和配置/03_02_证书认证配置/images/Pasted image 20240412191432.png]]
+
+系统配置文件
+只要把这些 都激活后， 不在commit。 之后 只要 agent 被启动。 就会立即和master 端 同步。然后之后， 每 30s 和 master node 同步一次 
+
+
+## 3.4 initial cert 的初步配置 
+
+
+run puppet agent --test on the agent to generate (and send) the initial cert request? That should put the agent in the certificate request list of your master.
+
+If the agent's just complaining about not finding a cert then quitting, it may be thinking that it's already sent a request
+
+方法: 
+	•  just reset its memory as far as SSL is concerned by backing up 
+	• then nuking (用核武器攻击， 就是删除 ) the configured puppet SSL directory (by default, /var/lib/puppet/ssl or /etc/puppetlabs/puppet/ssl), 
+	• then running puppet agent --test (with --debug and --verbose if you want to make really sure) - this run should output that it's generating a new cert request, and it should be sent to the configured master.
+
+
+
+To fix this, remove the CSR from both the master and the agent and then start a puppet run, which will automatically regenerate a CSR.
+
+On the master:
+  puppet cert clean ip-172-31-27-12.us-west-2.compute.internal
+
+On the agent:
+  1a. On most platforms: find /home/ubuntu/.puppetlabs/etc/puppet/ssl -name ip-172-31-27-12.us-west-2.compute.internal.pem -delete
+  1b. On Windows: del "\home\ubuntu\.puppetlabs\etc\puppet\ssl\certs\ip-172-31-27-12.us-west-2.compute.internal.pem" /f
+  2. puppet agent -t
+
+
+解释上面 
+1 Clear the nodes SSL folder in node machine. Not in puppet server 
+	rm -rf /etc/puppetlabs/puppet/ssl
+Note: This deletes all puppet SSL certificates, CSR, etc. So only do it on the node, not on the server.
+
+2.1 puppet cert list --all 查看 有那些证书 in puppetmaster
+
+2.2  Then, remove the CSR from the puppetmaster:
+	sudo /opt/puppetlabs/bin/puppet cert clean `<hostname>`
+
+3 Afterwards, do another puppet run on the node: 
+	sudo /opt/puppetlabs/bin/puppet agent -tv
+
+4   This will generate a new CSR.

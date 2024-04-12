@@ -2,7 +2,8 @@ https://confluence.ivu.de/display/SYS/How+to+write+unit+tests+for+Puppet+modules
 
 https://www.puppet.com/docs/puppet/7/bgtm#writing_modules_overview-modules-containment
 
-# 总览
+
+# 1 总览
 
 Test your module to make sure that it works in a variety of conditions and that its options and parameters work together. PDK includes tools for validating and running unit tests on your module, including RSpec, RSpec Puppet, and Puppet Spec Helper.
 
@@ -24,13 +25,44 @@ puppetlabs_spec_helper
 	
 	To learn more, see the [puppetlabs_spec_helper](https://github.com/puppetlabs/puppetlabs_spec_helper) project.
 
-# 1 **What are unit tests**
+# 2 **What are unit tests**
 
 Contrary to [acceptance tests](https://confluence.ivu.de/display/SYS/How+to+write+acceptance+tests+for+puppet+modules), executing unit tests for a puppet module does not imply installing this module on a real machine. Unit testing a module means testing it in a sandbox to check if it compiles succesfully on the basis of given facts. Because, during unit testing, the module has no access to a real system, facts about the operating system on which the installation would normally take place are mocked.
 
 Apart from catching syntax mistakes, undefined variables/functions and logical errors, rspec-puppet unit tests are very useful to catch missing module dependencies or incompatible module versions, and this in a very short amount of time. They would also find out if template files are missing or files are installed before ensuring that a directory exist. However, they are no guarantee that the manifest under test produces the expected installation/configuration. For this reason, they are usually run before acceptance tests, to catch errors quickly, as acceptance tests are considerably slower.
 
-# 2 **How to write them**
+
+# 3 
+
+https://rspec-puppet.com/
+
+Unit test 最推薦的測試工具，這算是單機測試中最重要的一環，
+
+gem 安裝 rspec-puppet
+$ gem install rspec-puppet
+
+
+範例 rspec-puppet 的作法
+```
+# 4 role_spec.rb
+require 'spec_helper'
+
+describe 'role::base' do
+  context 'with defaults for all parameters' do
+    let(:facts) { global_facts }
+    it do
+      should contain_class('profile::base')
+      should contain_class('profile::users')
+    end
+  end
+End
+```
+
+這個範例會測試有 include 以下 class
+include profile::base
+include profile::user
+
+# 4 **How to write them**
 
 The first step involved in writing unit tests for a Puppet module is to create the folder structure recommended by rspec-puppet.
 
@@ -42,7 +74,7 @@ In particular, to execute successfully, rspec-puppet expects a number of files i
 - Gemfile: this file contains the list of gems necessary to run the tests and their version.
 - Rakefile: this file contains a list of tasks that can be added to the standard test tasks.
 
-## 2.1 Define testing class in the sepc/classes
+## 4.1 Define testing class in the sepc/classes
 The tests themselves are files with names ending with "`_spec`" and are stored in the "spec" directory. They are usually testing classes and therefore stored in the sub-folder "classes", but rspec-puppet also makes it possible (and recommends) to use separate folders to test, among others, functions and types.
 
 Our first unit test for the module ivu_monitoring will test the class init.pp and indirectly the manifests that are included it.
@@ -63,7 +95,7 @@ It is also possible to specify default facts that are stored in a yaml file (usu
 Similarly, it is possible to set anew the values of the parameters used by the manifests in each example with  let(:params)  or to specify them in a hiera file that is referenced in the spec_helper.rb file:
 
 
-## 2.2 spec_helper.rb
+## 4.2 spec_helper.rb
 
 ![[images/RspecHelper2.png]]
 
@@ -73,7 +105,7 @@ At the beginning of the spec_helper.rb file, a set of gems is loaded with the ke
 puppetlabs_spec_helper  : 
 Some of these gems are very useful to set up and execute unit tests in an easy and efficient way. This is the case for the gem "puppetlabs_spec_helper". It is particularly useful to deal with module dependencies. 
 
-## 2.3 .fixtures.yml 这个 file 的作用
+## 4.3 .fixtures.yml 这个 file 的作用
 Indeed, for the catalog to compile successfully, all module dependencies must be installed locally. They must therefore be retrieved at the beginning of each test run, either from a Puppet Forge (private or public) or a git repository. For this to take place,  a file named ".fixtures.yml" must be added at the root of the module and all dependencies and their versions listed.
 
 ![[Pasted image 20240120115844.png]]
@@ -81,21 +113,21 @@ Indeed, for the catalog to compile successfully, all module dependencies must be
 In our case, we can then specify at the top of the file the URL of our internal stable Puppet Repository and retrieve all our dependencies (internal and third party dependencies) from it.  Unfortunately, puppetlabs_spec_helper does not allow to automatically retrieve the list of dependencies which is stored in the metadata file to create the .fixtures file from it. All dependencies must therefore be managed at two different places in the module, which can easily be the source of errors.
 
 
-## 2.4 puppetlabs_spec_helper
+## 4.4 puppetlabs_spec_helper
 puppetlabs_spec_helper comes with a set of predefined rake tasks such as "rake spec" (that executes all the tests contained in the "spec" folder) which itself contains sub-tasks such as "rake spec_prep" (that populates the "fixtures" directory with all required dependency modules), "rake spec_standalone" (that runs the actual tests) and "rake spec_clean" (that cleans the fixtures directory). 
 
 Rakefile 的作用 
 These rake tasks can be imported to the Rakefile that is located at the root of the module by adding the line "require puppetlabs_spec_helper/rake_tasks" at the top of it.
 
 
-# 3 How to Run Test 
+# 5 How to Run Test 
 For running unit tests for a module, it is then enough to execute the command "rake spec". 
 When running the tests locally, it might be sometimes useful to run the command *rake spec_clean* when conflicts occur between fixtures.
 
 
-# 4 Best Practices
+# 6 Best Practices
 
-## 4.1 Unit test for the OS versions supported by a module
+## 6.1 Unit test for the OS versions supported by a module
 
 Most of our modules support a specific set of operating systems and operating system versions. Usually this is specifies in the file metadata.json of the Puppet module: 
 
@@ -146,11 +178,11 @@ end
 ```
 
 
-## 4.2 Using Hiera in Unit Tests
+## 6.2 Using Hiera in Unit Tests
 
 Hier can be used in unit tests to supply parameters and test against them.
 
-### 4.2.1 To supply parameters:
+### 6.2.1 To supply parameters:
 1 create a file spec/fixtures/hiera.yaml with the Hiera hirarchy definition
 ```
 
@@ -172,7 +204,7 @@ ivu_monitoring::params::icinga2_version: 1.2.3
 
 ```
 
-### 4.2.2 To use hiera in you tests:
+### 6.2.2 To use hiera in you tests:
 
 1 include the module hiera in your spec_helper.rb:
 ```
@@ -209,7 +241,7 @@ end
 
 
 
-# 5 Common errors and possible solutions
+# 7 Common errors and possible solutions
 
 "Errno::ENOENT: No such file or directory - git"
 try to install git on the system ("apt install git")
@@ -217,7 +249,7 @@ try to install git on the system ("apt install git")
 
 
 
-# IVU 内部puppet module 的 unittest 
+# 8 IVU 内部puppet module 的 unittest 
 
 [14:37] Florian Lamprecht
 https://git.ivu-ag.com/projects/PUPPET/repos/ivu_ptp_software/browse/spec/defines
