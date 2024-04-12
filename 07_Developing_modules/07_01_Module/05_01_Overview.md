@@ -5,13 +5,13 @@ https://www.puppet.com/docs/puppet/7/modules_fundamentals.html#module-structure
 Modules contain Puppet classes, defined types, tasks, task plans, functions, resource types and providers, and plug-ins such as custom types or facts. 
 Modules must be installed in the Puppet modulepath. Puppet loads all content from every module in the modulepath, making this code available for use.
 
-# Module names
+# 1 Module names
 
 Module names must match the expression: `[a-z][a-z0-9_]*`. In other words, they can contain only lowercase letters, numbers, and underscores, and begin with a lowercase letter.
 
 These restrictions are similar to those that apply to class names, with the added restriction that module names cannot contain the namespace separator (`::`), because modules cannot be nested. Certain module names are disallowed; see the list of [reserved words and names](https://www.puppet.com/docs/puppet/7/lang_reserved#lang_reserved "You can use only certain characters for naming variables, modules, classes, defined types, and other custom constructs. Additionally, some words in the Puppet language are reserved and cannot be used as bare word strings or names.").
 
-# Manifests
+# 2 Manifests
 
 Manifests, contained in the module's `manifests/` folder, each contain one class or defined type.
 
@@ -31,7 +31,7 @@ For example, each module class or defined type would have the following names ba
 |`puppetlabs-apache`|`apache/manifests/security/rule_link.pp`|`apache::security::rule_link`|
 |`puppetlabs-apache`|`apache/manifests/fastcgi/server.pp`|`apache::fastcgi::server`|
 
-# Files in modules
+# 3 Files in modules
 
 You can serve files from a module's `files/` directory to agent nodes.
 
@@ -53,7 +53,7 @@ To access files with the `file` function, pass the reference `<MODULE NAME>/<FIL
 
 To learn more about the `file` function, see the [function reference](https://www.puppet.com/docs/puppet/7/function).
 
-# Templates in modules
+# 4 Templates in modules
 
 You can use ERB or EPP templates in your module to manage the content of configuration files. Templates combine code, data, and literal text to produce a string output, which can be used as the content attribute of a `file` resource or as a variable value. Templates are contained in the module's `templates/` directory.
 
@@ -68,5 +68,3 @@ template('my_module/component.erb')
 ```
 epp('my_module/component.epp')
 ```
-
-

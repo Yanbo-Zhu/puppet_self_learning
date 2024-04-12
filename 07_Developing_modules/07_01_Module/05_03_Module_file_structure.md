@@ -1,6 +1,6 @@
 
 
-# Module file structure
+# 1 Module file structure
 
 https://www.puppet.com/docs/pdk/3.x/pdk_creating_modules
 
@@ -35,6 +35,21 @@ PDK creates a basic module skeleton with directories and templates to support wr
 |`./templates`|Directory containing any ERB or EPP templates. Required when building a module to upload to the Forge.|
 |`.vscode`|Directory containing configuration for Visual Studio code.|
 |`.yardopts`|File containing the default configuration for Puppet Strings.|
+
+
+---
+
+
+|                                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 以一個 apache module 為例，我會需要產生以下這些檔案結構  | $ tree /etc/puppetlabs/code/modules/apache<br><br>├── files<br><br>\|   └── default.conf<br><br>└── manifests<br><br>    ├── init.pp<br><br>    ├── install.pp<br><br>    ├── config.pp<br><br>    ├── service.pp                                                                                                                                                                                                                                                                                                                                                                       |
+| module 的 manifests                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| init.pp 是預設被讀取的檔案，通常用來定義變數、引用 class。 | class apache (<br><br>  String $package_name      = 'apache2',<br><br>  String $package_ensure    = 'installed',<br><br>  String $service_name      = 'apache2',<br><br>  String $service_ensure    = 'running',<br><br>  String $default_site_conf = '/etc/apache2/sites-enabled/default.conf',<br><br>  String $run_user          = 'www-data',<br><br>){<br><br>  contain apache::install<br><br>  contain apache::config<br><br>  contain apache::service<br><br>  Class['::apache::install']<br><br>  -> Class['::apache::config']<br><br>  ~> Class['::apache::service']<br><br>} |
+| install.pp 用來定義如何安裝 package。         | class apache::install inherits apache {<br><br>  package { $apache::package_name:<br><br>    ensure => $apache::package_ensure<br><br>  }<br><br>}                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| service.pp 用來處理服務                    | class apache::service inherits apache {<br><br>  service { $apache::service_name:<br><br>    ensure    => $apache::service_ensure,<br><br>    subscribe => Package['apache'],<br><br>    require   => Class['apache::install']<br><br>  }<br><br>}                                                                                                                                                                                                                                                                                                                                      |
+| config.pp 用來處理設定檔                    | class apache::config inherits apache {<br><br>  file { `$apache::default_site_conf`:<br><br>    ensure => file,<br><br>    owner  => `$apache::run_user`,<br><br>    source => `"puppet:///modules/${module_name}/default.conf"`<br><br>  }<br><br>}                                                                                                                                                                                                                                                                                                                                    |
+|                                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+
 
 ----
 
@@ -119,7 +134,7 @@ types/
 Contains resource type aliases.
 
 
-# Manifests
+# 2 Manifests
 
 Manifests, contained in the module's `manifests/` folder, each contain one class or defined type.
 
@@ -142,7 +157,7 @@ For example, each module class or defined type would have the following names ba
 |`puppetlabs-apache`|`apache/manifests/fastcgi/server.pp`|`apache::fastcgi::server`|
 
 
-# Files in modules
+# 3 Files in modules
 
 You can serve files from a module's `files/` directory to agent nodes.
 Download files to the agent by setting the `file` resource's `source` attribute to the `puppet:///` URL for the file. Alternately, you can access module files with the `file` function.
@@ -162,7 +177,7 @@ Puppet URLs work for both `puppet agent` and `puppet apply`; in either case they
 
 To learn more about the `file` function, see the [function reference](https://www.puppet.com/docs/puppet/7/function).
 
-# Templates in modules
+# 4 Templates in modules
 
 You can use ERB or EPP templates in your module to manage the content of configuration files. Templates combine code, data, and literal text to produce a string output, which can be used as the content attribute of a `file` resource or as a variable value. 
 

@@ -4,7 +4,7 @@ https://www.puppet.com/docs/puppet/8/modules_metadata.html
 The `metadata.json` file is located in the module's main directory, outside any subdirectories.
 The metadata.json file uses standard JSON syntax and contains a single JSON object, mapping keys to values
 
-# metadata.json example 
+# 1 metadata.json example 
 
 ```json
 
@@ -49,7 +49,7 @@ The metadata.json file uses standard JSON syntax and contains a single JSON obje
 ```
 
 
-# Specifying dependencies
+# 2 Specifying dependencies
 
 If your module depends on functionality from another module, specify this in the `"dependencies"` key of the `metadata.json` file. The `"dependencies"` key accepts an array of hashes. This key is required, but if your module has no dependencies, you can pass an empty array.
 
@@ -69,7 +69,7 @@ The hash for each dependency must contain the `"name"` and `"version_requirement
 When installing modules with the `puppet module install` command, Puppet installs any missing dependencies. When installing modules with Code Manager and the Puppetfile, dependencies are not automatically installed, so they must be explicitly specified in the Puppetfile.
 
 
-# Specifying Puppet version requirements
+# 3 Specifying Puppet version requirements
 
 The `requirements` key specifies external requirements for the module, particularly the Puppet version required. Although you can express any requirement here, the Forge module pages and search function support only the `"puppet"` value, which specifies the Puppet version.
 
@@ -91,7 +91,7 @@ Important: The Forge requires both lower and upper bounds for the Puppet version
 For Puppet Enterprise versions, specify the core Puppet version included in that version of PE. For example, PE 2017.1 contained Puppet 4.9. Do not express requirements for Puppet versions earlier than 3.0, because those versions do not follow semantic versioning. For information about formatting version requirements, see the related topic about version specifiers in module metadata.
 
 
-# Specifying operating system compatibility
+# 4 Specifying operating system compatibility
 
 Specify the operating system your module is compatible with in the `operatingsystem_support` key. This key accepts an array of hashes, where each hash contains `operatingsystem` and `operatingsystemrelease` keys. The Forge uses these keys for search filtering and to display versions on module pages.
 
@@ -118,7 +118,7 @@ For example:
 ```
 
 
-# Specifying versions
+# 5 Specifying versions
 
 Your module metadata specifies your own module's version as well as the versions for your module's dependencies and requirements. Version your module semantically; for details about semantic versioning (also known as SemVer), see the [Semantic Versioning specification](http://semver.org). This helps others know what to expect from your module when you make changes.
 
@@ -164,7 +164,7 @@ Note: You cannot mix semantic versioning shorthand (such as .x) with syntax for 
 Note: Specification of minor versions is for semantic purposes only. Underlying tools, such as facterdb and rspec, only recognize major versions.
 
 
-# Adding tags
+# 6 Adding tags
 
 Optionally, you can add tags to your metadata to help users find your module in Forge searches. Generally, include four to six tags for any given module.
 
@@ -173,7 +173,7 @@ Pass tags as an array, like `["msyql", "database", "monitoring"]`.
 Tags cannot contain whitespace. Certain tags are prohibited, such as profanity or tags resembling the `$::operatingsystem` fact (such as `"redhat"`, `"rhel"`, `"debian"`, `"` `windows"`, or `"osx"`). Use of prohibited tags lowers your module's quality score on the Forge.
 
 
-# Available `metadata.json` keys
+# 7 Available `metadata.json` keys
 
 Required and optional `metadata.json` keys specify metadata for your module.
 
