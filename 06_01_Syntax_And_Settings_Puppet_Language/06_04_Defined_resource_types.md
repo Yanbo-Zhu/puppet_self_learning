@@ -1,10 +1,12 @@
 自定义一个 resource types 
 
-Defined resource types, sometimes called defined types or defines, are blocks of Puppet code that can be evaluated multiple times with different parameters.
+https://www.puppet.com/docs/puppet/8/lang_defined_types
+
+Defined resource types, sometimes called ==defined types or defines==, are blocks of Puppet code that can be evaluated multiple times with different parameters.
 
 Create a defined resource type by writing a `define` statement in a manifest (`.pp`) file. You can declare a resource of a defined type in the same way you would declare a resource of a built-in type.
 
-新的 resource type 被定义在 一个 新的 module 中: 
+新的 resource type 被定义在 一个 新的 manifest 中  中: 
 Store defined resource type manifests in the `manifests/` directory of a module. Define only one defined type in a manifest, and give the manifest file the same name as the defined type. Puppet automatically loads any defined types that are present in a valid module. See [module fundamentals](https://www.puppet.com/docs/puppet/8/modules_fundamentals#modules_fundamentals "You\") to learn more about module structure and usage.
 
 If a defined type is present and loadable, you can declare resources of that defined type anywhere in your manifests. Declaring a new resource of the defined type causes Puppet to re-evaluate the block of code in the definition, using different values for the parameters.
@@ -13,7 +15,16 @@ Every instance of a defined type contains all of its unique resources. This mean
 
 > Tip: Unlike many parts of Puppet code, define statements aren't expressions, so you can't use them where a value is expected.
 
-# 1 Defining types
+# 1 Difference of Class and  Defined_resource_types
+
+You only can include classes once, defined types you can use multiple times.
+
+https://stackoverflow.com/questions/20052763/why-do-modules-use-classes-in-puppet-instead-of-defines
+
+- Will you need to have multiple instances of this on the same node (for example, a website)? If so, use a **Defined_resource_types**.
+- Could this cause conflicts with other instances of the same thing on this node (for example, a web server)? If so, use a **class**.
+
+# 2 Defining types
 
 The general form of a define statement is:
 
@@ -61,7 +72,7 @@ define apache::vhost (
 ```
 
 
-# 2 Declaring defined type resources
+# 3 Declaring defined type resources
 
 就是 在其他地方 使用 defined type resources 
 
@@ -94,7 +105,7 @@ You can include any metaparameter in the declaration of a defined type instance.
 - The value of the metaparameter can be used as a variable in the definition, as though it were a normal parameter. For example, in an instance declared with `require => Class['ntp']`, the local value of `$require` would be `Class['ntp']`.
 
 
-# 3 Naming
+# 4 Naming
 
 Defined type names can consist of one or more namespace segments, which indicate the defined type's location in a module. Each segment must adhere to the [naming and reserved names](https://www.puppet.com/docs/puppet/8/lang_reserved#lang_reserved_words) guidelines.
 
@@ -108,7 +119,7 @@ Because `$title` is unique per instance, this ensures the resources are unique a
 file { "${vhost_dir}/${servername}.conf": 
 ```
 
-# 4 Parameters and attributes
+# 5 Parameters and attributes
 
 When you create a defined type, you can precede each parameter in the define statement with an optional data type. If you include a data type, Puppet checks the resource parameter's value at runtime to make sure that it has the right data type; if the value is illegal, Puppet raises an error. If you don't specify a data type in the definition statement, the parameter accepts values of any data type.
 
@@ -124,7 +135,7 @@ apache::vhost {'homepages':
 Note:
 
 The `$title` and `$name` variables are both set to the defined type's name automatically, so they cannot be used as parameters.
-## 4.1 `$title` and `$name`
+## 5.1 `$title` and `$name`
 
 The `$title` and `$name` attributes are always available to a defined type and are not explicitly added to the definition. These attributes are both set to the defined type's name automatically:
 
