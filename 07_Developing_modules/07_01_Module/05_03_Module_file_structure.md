@@ -6,35 +6,35 @@ https://www.puppet.com/docs/pdk/3.x/pdk_creating_modules
 
 PDK creates a basic module skeleton with directories and templates to support writing, validating, and testing Puppet code. 
 
-|Files and directories|Description|
-|---|---|
-|Module directory|Directory with the same name as the module. Contains all of the module's files and directories.|
-|`appveyor.yml`|File containing configuration for Appveyor CI integration.|
-|`CHANGELOG.md`|File in which you can document notable changes to this project.|
-|`.devcontainer`|File describing how a container should be configured to test this module.|
-|`./files`|Directory containing static files, which managed nodes can download.|
-|`.fixtures.yml`|File specifying where test dependencies are loaded from.|
-|`Gemfile`|File describing Ruby gem dependencies.|
-|`.gitattributes`|Recommended defaults for using Git.|
-|`.gitignore`|File listing module files that Git should ignore.|
-|`.gitlab-ci.yml`|File containing an example configuration for GitLab CI.|
-|`./manifests`|Directory containing module manifests, each of which defines one class or defined type. PDK creates manifests when you create new classes or defined types with `pdk` commands.|
-|`metadata.json`|File containing metadata for the module.|
-|`.pdkignore`|File listing module files that PDK should ignore when building a module package for upload to the Forge.|
-|`puppet-lint.rc`|File containing configuration for puppet-lint.|
-|`Rakefile`|File containing configuration for the Ruby infrastructure. Used in CI and for backwards compatibility.|
-|`README.md`|File containing a README template for your module.|
-|`.rspec`|File containing the default configuration for RSpec.|
-|`.rubocop.yml`|File containing recommended settings for Ruby style checking.|
-|`./spec`|Directory containing files and directories for unit testing.|
-|`spec/default_facts.yml`|File specifying facts that are available to all tests.|
-|`spec/spec_helper.rb`|Helper code to set up preconditions for unit tests.|
-|`./spec/classes`|Directory containing testing templates for any classes you create with the `pdk new class` command.|
-|`.sync.yml`|File to customize the PDK template in use.|
-|`./tasks`|Directory containing task files and task metadata files for any tasks you create with the `pdk new task`command.|
-|`./templates`|Directory containing any ERB or EPP templates. Required when building a module to upload to the Forge.|
-|`.vscode`|Directory containing configuration for Visual Studio code.|
-|`.yardopts`|File containing the default configuration for Puppet Strings.|
+| Files and directories    | Description                                                                                                                                                                     |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Module directory         | Directory with the same name as the module. Contains all of the module's files and directories.                                                                                 |
+| `appveyor.yml`           | File containing configuration for Appveyor CI integration.                                                                                                                      |
+| `CHANGELOG.md`           | File in which you can document notable changes to this project.                                                                                                                 |
+| `.devcontainer`          | File describing how a container should be configured to test this module.                                                                                                       |
+| `./files`                | Directory containing static files, which managed nodes can download.                                                                                                            |
+| `.fixtures.yml`          | File specifying where test dependencies are loaded from.                                                                                                                        |
+| `Gemfile`                | File describing Ruby gem dependencies.                                                                                                                                          |
+| `.gitattributes`         | Recommended defaults for using Git.                                                                                                                                             |
+| `.gitignore`             | File listing module files that Git should ignore.                                                                                                                               |
+| `.gitlab-ci.yml`         | File containing an example configuration for GitLab CI.                                                                                                                         |
+| `./manifests`            | Directory containing module manifests, each of which defines one class or defined type. PDK creates manifests when you create new classes or defined types with `pdk` commands. |
+| `metadata.json`          | File containing metadata for the module.                                                                                                                                        |
+| `.pdkignore`             | File listing module files that PDK should ignore when building a module package for upload to the Forge.                                                                        |
+| `puppet-lint.rc`         | File containing configuration for puppet-lint.                                                                                                                                  |
+| `Rakefile`               | File containing configuration for the Ruby infrastructure. Used in CI and for backwards compatibility.                                                                          |
+| `README.md`              | File containing a README template for your module.                                                                                                                              |
+| `.rspec`                 | File containing the default configuration for RSpec.                                                                                                                            |
+| `.rubocop.yml`           | File containing recommended settings for Ruby style checking.                                                                                                                   |
+| `./spec`                 | Directory containing files and directories for unit testing.                                                                                                                    |
+| `spec/default_facts.yml` | File specifying facts that are available to all tests.                                                                                                                          |
+| `spec/spec_helper.rb`    | Helper code to set up preconditions for unit tests.                                                                                                                             |
+| `./spec/classes`         | Directory containing testing templates for any classes you create with the `pdk new class` command.                                                                             |
+| `.sync.yml`              | File to customize the PDK template in use.                                                                                                                                      |
+| `./tasks`                | Directory containing task files and task metadata files for any tasks you create with the `pdk new task`command.                                                                |
+| `./templates`            | Directory containing any ERB or EPP templates. Required when building a module to upload to the Forge.                                                                          |
+| `.vscode`                | Directory containing configuration for Visual Studio code.                                                                                                                      |
+| `.yardopts`              | File containing the default configuration for Puppet Strings.                                                                                                                   |
 
 
 ---

@@ -113,7 +113,11 @@ The three layers are searched in the following order: global → environment →
 
 ### 4.2.1 The global layer
 
+`/etc/puppetlabs/puppet`
+
 ==The configuration file for the global layer is located, by default, in `$confdir/hiera.yaml`. You can change the location by changing the `hiera_config` setting in `puppet.conf`.==
+
+
 
 Hiera has one global hierarchy. Because it goes before the environment layer, it’s useful for temporary overrides, for example, when your ops team needs to bypass its normal change processes.
 
@@ -128,11 +132,15 @@ Other than the above use cases, try to avoid the global layer. Specify all norma
 
 ### 4.2.2 The environment layer
 
+`/etc/puppetlabs/code/environments/production/hiera.yaml`
+
 The configuration file for the environment layer is located, by default, in `<ENVIRONMENT DIR>/hiera.yaml`.
 
 The environment layer is where most of your Hiera data hierarchy definition happens. Every Puppet environment has its own hierarchy configuration, which applies to nodes in that environment. Supported config formats include: v5, v3 (deprecated).
 
 ### 4.2.3 The module layer
+
+`/etc/puppetlabs/code/environments/production/modules/ivu_ptp_kubernetes/hiera.yaml`
 
 The configuration file for a module layer is located, by default, in a module's `<MODULE>/hiera.yaml`.
 
