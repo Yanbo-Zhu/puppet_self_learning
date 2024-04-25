@@ -4,6 +4,23 @@ https://www.puppet.com/docs/puppet/7/bgtm#writing_modules_overview-modules-conta
 
 
 # 1 总览
+https://www.puppet.com/docs/pdk/3.x/pdk_testing.html#unit-testing-modules
+
+<mark>Create and run unit tests to verify that your Puppet code compiles on supported operating systems and includes all declared resources in the catalog.</mark>
+PDK runs your unit tests to ensure that your code compiles correctly and works as you expect it to, but it cannot test changes to the managed system or services.
+PDK can create ==a basic unit test file that tests whether a manifest compiles to the catalog on the operating systems== specified in the module's metadata.json file. PDK creates these unit test files when you
+
+==they can’t test the result of the manifest on a live system ==
+
+
+---
+这个街十号 
+Rspec-puppet tests are there to test the behaviour of Puppet when it compiles your manifests into a catalogue of Puppet resources. For example, you might want to test that your `apache::vhost` defined type creates a `file` resource with a `path` of `/etc/apache2/sites-available/foo` when run on a Debian host.
+
+When writing your test cases, you should only test the first level of resources in your manifest. ==By this I mean, when testing your ‘webserver’ role class, you would test for the existence of the `apache::vhost` types, but not for the `file` resources created by them, that’s the job of the tests for `apache::vhost`==
+
+--- 
+
 
 Test your module to make sure that it works in a variety of conditions and that its options and parameters work together. PDK includes tools for validating and running unit tests on your module, including RSpec, RSpec Puppet, and Puppet Spec Helper.
 
@@ -32,9 +49,12 @@ Contrary to [acceptance tests](https://confluence.ivu.de/display/SYS/How+to+writ
 Apart from catching syntax mistakes, undefined variables/functions and logical errors, rspec-puppet unit tests are very useful to catch missing module dependencies or incompatible module versions, and this in a very short amount of time. They would also find out if template files are missing or files are installed before ensuring that a directory exist. However, they are no guarantee that the manifest under test produces the expected installation/configuration. For this reason, they are usually run before acceptance tests, to catch errors quickly, as acceptance tests are considerably slower.
 
 
-# 3 
+# 3 Rspec简介
 
 https://rspec-puppet.com/
+https://rspec-puppet.com/tutorial/
+https://github.com/puppetlabs/rspec-puppet/?tab=readme-ov-file#defined-types-and-classes
+http://rspec.info/
 
 Unit test 最推薦的測試工具，這算是單機測試中最重要的一環，
 
