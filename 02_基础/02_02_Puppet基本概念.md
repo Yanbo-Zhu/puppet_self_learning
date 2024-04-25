@@ -62,6 +62,7 @@ Puppet 和 Chef 之間存在著微妙的關係，有許多企業會同時使用 
 Ansible靠模块实现，而puppet靠的是资源实现；puppet的模块类似于Ansible的角色roles； 定义的模块是为了复用，不是为了管控；
 定义模块的文件叫资源清单（manifest）；
 为每个站点主机定义具体使用哪个模块的叫站点清单（sitemanifest）；
+
 ### 3.1.1 Domain
 
 第一件事情就是要講 Domain，Domain 在 Puppet 的世界非常重要，**所有 Node 都必須擁有自己的 Domain**，由於 Puppet 和 Node 之間的 trust 是使用 CA 憑證，所以跟 Node 之間會換發憑證，這個動作就需要 Domain 的存在，如果 Master / Node 更換 Domain 那麼你的憑證就會信任失敗，這時所有的 Deploy 都將失敗。
@@ -70,6 +71,12 @@ Ansible靠模块实现，而puppet靠的是资源实现；puppet的模块类似�
 
 ### 3.1.2 [Catalogs](https://puppet.com/docs/puppet/5.3/subsystem_catalog_compilation.html)
 
+==a manifest compiles to the catalog (a manifest file can compile to the catalog)==
+
+==A catalog is a document that describes the desired state for each resource that Puppet manages on a node. ==
+==A primary server typically compiles a catalog from manifests of Puppet code.==
+The catalog is the aggregation of the desired state of all the resources managed on the node. The responsibility for compiling the catalog depends on Puppet's operating mode: In a server-agent operating mode it is the responsibility of the Puppet server to compile the catalog for the agent.
+
 Puppet 會把 Node 所需要的設定封裝成 Catalogs，再由 Node 將 Catalogs 解析後 Deploy，Catalogs 又分為兩個階段來 Deploy catalogs：
 
 - Compile catalog
@@ -77,7 +84,15 @@ Puppet 會把 Node 所需要的設定封裝成 Catalogs，再由 Node 將 Catalo
 
 在 Puppet Master 時會將程式碼編譯成 Compile catalog，由 Node 將 Catalogs apply 進行佈署，這樣可以保證在傳輸過程中即使被擷取也僅是被編譯過的資料。
 
----
+
+### 3.1.7 [Manifest](https://puppet.com/docs/puppet/5.3/lang_summary.html)
+
+==A manifest is a file containing Puppet configuration language that describes how resources should be configured. ==
+The manifest is the closest thing to what one might consider a Puppet program. It declares resources that define state to be enforced on a node 
+
+==a manifest compiles to the catalog (a manifest file can compile to the catalog)==
+
+Manifest 是 Puppet 的倉庫，所有的 Resource 都會在 manifest 裡面去定義，就好比 Ansible 的 playbook。
 
 ### 3.1.3 [Node](https://puppet.com/docs/puppet/5.3/lang_node_definitions.html)
 
@@ -105,9 +120,6 @@ Facter 是 Puppet 的小幫手，Facter 會隨著 Puppet agent 安裝在 Node �
 
 ---
 
-### 3.1.7 [Manifest](https://puppet.com/docs/puppet/5.3/lang_summary.html)
-
-Manifest 是 Puppet 的倉庫，所有的 Resource 都會在 manifest 裡面去定義，就好比 Ansible 的 playbook。
 
 ## 3.2 Puppet 的 3, 4, 5 版本
 
