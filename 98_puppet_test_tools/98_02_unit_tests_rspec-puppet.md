@@ -1,8 +1,9 @@
 https://confluence.ivu.de/display/SYS/How+to+write+unit+tests+for+Puppet+modules
+https://rspec-puppet.com/documentation/classes/
 
 https://www.puppet.com/docs/puppet/7/bgtm#writing_modules_overview-modules-containment
 
-
+https://github.com/TomPoulton/rspec-puppet-unit-testing
 # 1 总览
 https://www.puppet.com/docs/pdk/3.x/pdk_testing.html#unit-testing-modules
 
@@ -100,17 +101,21 @@ The unit test file is located in your module's `/spec/classes` (for classes) or 
 
 # 8 How to Run Test 
 
+## 8.1 rake 命令 
 
-## 8.1 rake spec 
+下面的这些命令 都需要 puppetlabs_spec_helper/rake_tasks 这个文件 
 
 For running unit tests for a module, it is then enough to execute the command `rake spec`. 
 When running the tests locally, it might be sometimes useful to run the command `rake spec_clean `when conflicts occur between fixtures.
+
+"rake spec" (that executes all the tests contained in the "spec" folder) which itself contains sub-tasks such as "rake spec_prep" (that populates the "fixtures" directory with all required dependency modules), 
+"rake spec_standalone" (that runs the actual tests) 
+"rake spec_clean" (that cleans the fixtures directory). 
 
 ## 8.2 pdk test unit 
 https://www.puppet.com/docs/pdk/3.x/pdk_testing
 
 The `pdk test unit` command runs all of the tests in your module's `/spec/` directory.
-
 
 The `pdk test unit` command runs all the unit tests in your module.
 
@@ -122,7 +127,7 @@ The `pdk test unit` command runs all the unit tests in your module.
     ```
     pdk test unit --tests=<TEST1>,<TEST2>
     ```
-    
+	   test的名字为  
     To unit test against a specific version of Puppet, add a version option flag.
     For example. To test against Puppet 5.5.12, run:
     
@@ -213,13 +218,33 @@ end
 
 <u>自己假定的 facts 的值 给入通过 default_facts.yml</u> 
 It is also possible to specify default facts that are stored in a yaml file (usually called "default_facts.yml"). The location for this file can be set in spec_helper.rb.
-Similarly, it is possible to set anew the values of the parameters used by the manifests in each example with  let(:params)  or to specify them in a hiera file that is referenced in the spec_helper.rb file:
 
-## 9.3 Configuration via spec/spec_helper.rb
+
+## 9.3 .fixtures.yml 这个 file 的作用
+
+==This file can be used to install module dependencies for unit testing==
+
+Indeed, for the catalog to compile successfully, all module dependencies must be installed locally. They must therefore be retrieved at the beginning of each test run, either from a Puppet Forge (private or public) or a git repository. For this to take place,  a file named ".fixtures.yml" must be added at the root of the module and all dependencies and their versions listed.
+
+![[Pasted image 20240120115844.png]]
+
+In our case, we can then specify at the top of the file the URL of our internal stable Puppet Repository and retrieve all our dependencies (internal and third party dependencies) from it.  
+==Unfortunately, puppetlabs_spec_helper does not allow to automatically retrieve the list of dependencies which is stored in the metadata file to create the .fixtures file from it. ==
+All dependencies must therefore be managed at two different places in the module, which can easily be the source of errors.
+
+
+## 9.4 puppetlabs_spec_helper 文件夹
+
+puppetlabs_spec_helper comes with a set of predefined rake tasks such as "rake spec" (that executes all the tests contained in the "spec" folder) which itself contains sub-tasks such as "rake spec_prep" (that populates the "fixtures" directory with all required dependency modules), "rake spec_standalone" (that runs the actual tests) and "rake spec_clean" (that cleans the fixtures directory). 
+
+Rakefile 的作用 
+These rake tasks can be imported to the Rakefile that is located at the root of the module by adding the line "require puppetlabs_spec_helper/rake_tasks" at the top of it.
+
+## 9.5 Configuration via spec/spec_helper.rb
 
 Configuration is typically done in a `spec/spec_helper.rb `file which each of your spec will require. Example code:
 
-```puppet
+```ruby
 RSpec.configure do |c|
   c.module_path     = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures', 'modules')
   c.environmentpath = File.join(Dir.pwd, 'spec')
@@ -250,7 +275,7 @@ At the beginning of the spec_helper.rb file, a set of gems is loaded with the ke
 puppetlabs_spec_helper  : 
 Some of these gems are very useful to set up and execute unit tests in an easy and efficient way. This is the case for the gem "puppetlabs_spec_helper". It is particularly useful to deal with module dependencies. 
 
-### 9.3.1 更多的 config option 
+### 9.5.1 更多的 config option 
 
 更多的 config option 见 https://github.com/puppetlabs/rspec-puppet/?tab=readme-ov-file#configuration
 
@@ -261,7 +286,7 @@ RSpec.configure do |c|
 end
 ```
 
-#### 9.3.1.1 module_path
+#### 9.5.1.1 module_path
 
 [](https://github.com/puppetlabs/rspec-puppet/?tab=readme-ov-file#module_path)
 
@@ -271,7 +296,7 @@ end
 
 The path to the directory containing your Puppet modules.
 
-#### 9.3.1.2 default_facts
+#### 9.5.1.2 default_facts
 
 [](https://github.com/puppetlabs/rspec-puppet/?tab=readme-ov-file#default_facts)
 
@@ -281,7 +306,7 @@ The path to the directory containing your Puppet modules.
 
 A hash of default facts that should be used for all the tests.
 
-#### 9.3.1.3 hiera_config
+#### 9.5.1.3 hiera_config
 
 [](https://github.com/puppetlabs/rspec-puppet/?tab=readme-ov-file#hiera_config)
 
@@ -291,7 +316,7 @@ A hash of default facts that should be used for all the tests.
 
 The path to your `hiera.yaml` file (if used).
 
-#### 9.3.1.4 manifest
+#### 9.5.1.4 manifest
 
 [](https://github.com/puppetlabs/rspec-puppet/?tab=readme-ov-file#manifest)
 
@@ -301,7 +326,7 @@ The path to your `hiera.yaml` file (if used).
 
 Path to test manifest. Typically `spec/fixtures/manifests/site.pp`.
 
-#### 9.3.1.5 default_node_params
+#### 9.5.1.5 default_node_params
 
 [](https://github.com/puppetlabs/rspec-puppet/?tab=readme-ov-file#default_node_params)
 
@@ -311,7 +336,7 @@ Path to test manifest. Typically `spec/fixtures/manifests/site.pp`.
 
 A hash of default node parameters that should be used for all the tests.
 
-#### 9.3.1.6 default_trusted_facts
+#### 9.5.1.6 default_trusted_facts
 
 [](https://github.com/puppetlabs/rspec-puppet/?tab=readme-ov-file#default_trusted_facts)
 
@@ -321,7 +346,7 @@ A hash of default node parameters that should be used for all the tests.
 
 A hash of default trusted facts that should be used for all the tests (available in the manifests as the `$trusted` hash).
 
-#### 9.3.1.7 confdir
+#### 9.5.1.7 confdir
 
 [](https://github.com/puppetlabs/rspec-puppet/?tab=readme-ov-file#confdir)
 
@@ -331,7 +356,7 @@ A hash of default trusted facts that should be used for all the tests (available
 
 The path to the main Puppet configuration directory.
 
-#### 9.3.1.8 config
+#### 9.5.1.8 config
 
 [](https://github.com/puppetlabs/rspec-puppet/?tab=readme-ov-file#config)
 
@@ -341,7 +366,7 @@ The path to the main Puppet configuration directory.
 
 The path to `puppet.conf`.
 
-#### 9.3.1.9 environmentpath
+#### 9.5.1.9 environmentpath
 
 [](https://github.com/puppetlabs/rspec-puppet/?tab=readme-ov-file#environmentpath)
 
@@ -351,7 +376,7 @@ The path to `puppet.conf`.
 
 The search path for environment directories.
 
-#### 9.3.1.10 strict_variables
+#### 9.5.1.10 strict_variables
 
 [](https://github.com/puppetlabs/rspec-puppet/?tab=readme-ov-file#strict_variables)
 
@@ -361,7 +386,7 @@ The search path for environment directories.
 
 Makes Puppet raise an error when it tries to reference a variable that hasn't been defined (not including variables that have been explicitly set to `undef`).
 
-#### 9.3.1.11 stringify_facts
+#### 9.5.1.11 stringify_facts
 
 [](https://github.com/puppetlabs/rspec-puppet/?tab=readme-ov-file#stringify_facts)
 
@@ -371,7 +396,7 @@ Makes Puppet raise an error when it tries to reference a variable that hasn't be
 
 Makes rspec-puppet coerce all the fact values into strings (matching the behaviour of older versions of Puppet).
 
-#### 9.3.1.12 enable_pathname_stubbing
+#### 9.5.1.12 enable_pathname_stubbing
 
 [](https://github.com/puppetlabs/rspec-puppet/?tab=readme-ov-file#enable_pathname_stubbing)
 
@@ -381,7 +406,7 @@ Makes rspec-puppet coerce all the fact values into strings (matching the behavio
 
 Configures rspec-puppet to stub out `Pathname#absolute?` with it's own implementation. This should only be enabled if you're running into an issue running cross-platform tests where you have Ruby code (types, providers, functions, etc) that use `Pathname#absolute?`.
 
-#### 9.3.1.13 setup_fixtures
+#### 9.5.1.13 setup_fixtures
 
 [](https://github.com/puppetlabs/rspec-puppet/?tab=readme-ov-file#setup_fixtures)
 
@@ -391,7 +416,7 @@ Configures rspec-puppet to stub out `Pathname#absolute?` with it's own implement
 
 Configures rspec-puppet to automatically create a link from the root of your module to `spec/fixtures/<module name>` at the beginning of the test run.
 
-#### 9.3.1.14 derive_node_facts_from_nodename
+#### 9.5.1.14 derive_node_facts_from_nodename
 
 [](https://github.com/puppetlabs/rspec-puppet/?tab=readme-ov-file#derive_node_facts_from_nodename)
 
@@ -403,7 +428,7 @@ If `true`, rspec-puppet will override the `fdqn`, `hostname`, and `domain` facts
 
 In some circumstances (e.g. where your nodename/certname is not the same as your FQDN), this behaviour is undesirable and can be disabled by changing this setting to `false`.
 
-#### 9.3.1.15 facter_implementation
+#### 9.5.1.15 facter_implementation
 
 [](https://github.com/puppetlabs/rspec-puppet/?tab=readme-ov-file#facter_implementation)
 
@@ -415,21 +440,6 @@ Configures rspec-puppet to use a specific Facter implementation for running unit
 
 - `facter` - Use the default implementation, honoring the Facter version specified in the Gemfile
 - `rspec` - Use a custom hash-based implementation of Facter defined in rspec-puppet (this provides a considerable gain in speed if tests are run with Facter 4)
-
-## 9.4 .fixtures.yml 这个 file 的作用
-Indeed, for the catalog to compile successfully, all module dependencies must be installed locally. They must therefore be retrieved at the beginning of each test run, either from a Puppet Forge (private or public) or a git repository. For this to take place,  a file named ".fixtures.yml" must be added at the root of the module and all dependencies and their versions listed.
-
-![[Pasted image 20240120115844.png]]
-
-In our case, we can then specify at the top of the file the URL of our internal stable Puppet Repository and retrieve all our dependencies (internal and third party dependencies) from it.  Unfortunately, puppetlabs_spec_helper does not allow to automatically retrieve the list of dependencies which is stored in the metadata file to create the .fixtures file from it. All dependencies must therefore be managed at two different places in the module, which can easily be the source of errors.
-
-
-## 9.5 puppetlabs_spec_helper
-puppetlabs_spec_helper comes with a set of predefined rake tasks such as "rake spec" (that executes all the tests contained in the "spec" folder) which itself contains sub-tasks such as "rake spec_prep" (that populates the "fixtures" directory with all required dependency modules), "rake spec_standalone" (that runs the actual tests) and "rake spec_clean" (that cleans the fixtures directory). 
-
-Rakefile 的作用 
-These rake tasks can be imported to the Rakefile that is located at the root of the module by adding the line "require puppetlabs_spec_helper/rake_tasks" at the top of it.
-
 
 
 # 10 一个 `<Classname_to_betested>_spec.rb` 里面的内容 
@@ -507,12 +517,22 @@ You can test whether the subject catalog compiles cleanly with `compile`.
 
 ```ruby
 it { is_expected.to compile }
+it { is_expected.to compile.with_all_deps }  # with all dependency、 dependecny shoud be definded in .fixtures.yml
 ```
 
-To check the error messages of your class, you can check for raised error messages.
 
+To check the error messages of your class, you can check for raised error messages.
+To test whether the function throws an exception using `.and_raise_error`. The Error message should match the context in `/error message match/`. the text of `error message match` can be replaced 
 ```ruby
 it { is_expected.to compile.and_raise_error(/error message match/) }
+it { is_expected.to compile.and_raise_error(/Installation of a fitnesse instance ist not supported on Windows/) }
+
+
+    it do
+      expect {
+        is_expected.to contain_file('/etc/logrotate.d/nginx')
+      }.to raise_error(Puppet::Error, /compress must be true or false/)
+    end
 ```
 
 ### 11.1.2 Checking if a resource exists
@@ -746,7 +766,7 @@ https://github.com/puppetlabs/rspec-puppet/?tab=readme-ov-file#writing-tests
 
 To test that
 
-```
+```ruby
 sysctl { 'baz'
   value => 'foo',
 }
@@ -754,7 +774,7 @@ sysctl { 'baz'
 
 Will cause the following resource to be in included in catalogue for a host
 
-```
+```ruby
 exec { 'sysctl/reload':
   command => '/sbin/sysctl -p /etc/sysctl.conf',
 }
@@ -773,7 +793,7 @@ end
 
 ## 12.2 Specifying the title of a resource: let(:title) { 'foo' }
 
-let(:title) { 'foo' }
+`let(:title) { 'foo' }`
 
 ## 12.3 Specifying the parameters to pass to a resources or parameterised class: let(:params) 
 
@@ -1176,7 +1196,7 @@ RSpec.configure do |c|
 end
 ```
 
-## 14.2 Test usage examples
+## 14.2 example1
 
 这个例子 用来测试 hiera 是否能正确提取我们想要的值
 
@@ -1232,6 +1252,79 @@ The next test ensures that autoloaded parameters work correctly within your clas
 
 **Please note:** In-module hiera data depends on having a correct metadata.json file. It is strongly recommended that you use [metadata-json-lint](https://github.com/voxpupuli/metadata-json-lint) to automatically check your metadata.json file before running rspec.
 
+
+## 14.3 IVU example
+https://confluence.ivu.de/display/SYS/How+to+write+unit+tests+for+Puppet+modules
+
+Hier can be used in unit tests to supply parameters and test against them.
+
+Similarly, it is possible to set anew the values of the parameters used by the manifests in each example with  let(:params)  or to specify them in a hiera file that is referenced in the spec_helper.rb file:
+### 14.3.1 To supply parameters:
+1 create a file spec/fixtures/hiera.yaml with the Hiera hirarchy definition
+```
+
+---
+:backends:
+  - yaml
+:yaml:
+  :datadir: './spec/fixtures/hiera'
+:hierarchy:
+  - 'default'
+
+```
+
+2 create a file spec/fixtures/hiera/default.yaml with the parameters to be used during the test
+
+```
+---
+ivu_monitoring::params::icinga2_version: 1.2.3
+
+```
+
+### 14.3.2 To use hiera in you tests:
+
+1 include the module hiera in your spec_helper.rb:
+```ruby
+...
+require 'hiera'
+...
+
+```
+上面的会报错， 说是 无法找到 hiera 这个 lib 对应的file
+
+```
+使用   hiera.lookup('ivu_ptp_fitnesse::fitnesse_tag', nil, nil) 的时候会报错 
+
+Failure/Error: hiera.lookup('ivu_ptp_fitnesse::fitnesse_tag', nil, nil)
+```
+
+
+
+2 initialize hiera in your test spec and test against it:
+init_spec 是一个 testing class 的名字 
+
+init_spec.rb
+```ruby
+let(:hiera_config) { 'spec/fixtures/hiera.yaml' }
+hiera = Hiera.new( { :config => 'spec/fixtures/hiera.yaml' } )
+...
+# 16 #
+# 17 Versions of installed packages
+# 18 #
+case facts[:osfamily]
+   when 'windows'
+     it { is_expected.to contain_package('Icinga 2').with(
+       'ensure' => hiera.lookup('ivu_monitoring::params::icinga2_version', nil, nil),
+     ) }
+   else
+     it { is_expected.to contain_package('icinga2').with(
+       'ensure' => hiera.lookup('ivu_monitoring::params::icinga2_version', nil, nil),
+     ) }
+   end
+end
+```
+
+
 # 15 Best Practices
 
 ## 15.1 标准的 
@@ -1253,11 +1346,56 @@ end
 ```
 
 
-## 15.2 检查
+## 15.2 检查File 生成的正确不正确
 https://rspec-puppet.com/tutorial/
+
+```ruby
+require 'spec_helper'
+
+describe 'logrotate::rule' do
+  let(:title) { 'nginx' }
+
+  it { is_expected.to contain_class('logrotate::setup') }
+
+  it do
+    is_expected.to contain_file('/etc/logrotate.d/nginx').with({
+      'ensure' => 'present',
+      'owner'  => 'root',
+      'group'  => 'root',
+      'mode'   => '0444',
+    })
+  end
+
+  context 'with compress => true' do
+    let(:params) { {'compress' => true} }
+
+    it do
+      is_expected.to contain_file('/etc/logrotate.d/nginx') \
+        .with_content(/^\s*compress$/)
+    end
+  end
+
+  context 'with compress => false' do
+    let(:params) { {'compress' => false} }
+
+    it do
+      is_expected.to contain_file('/etc/logrotate.d/nginx') \
+        .with_content(/^\s*nocompress$/)
+    end
+  end
+
+  context 'with compress => foo' do
+    let(:params) { {'compress' => 'foo'} }
+
+    it do
+      expect {
+        is_expected.to contain_file('/etc/logrotate.d/nginx')
+      }.to raise_error(Puppet::Error, /compress must be true or false/)
+    end
+  end
+end
 ```
-https://rspec-puppet.com/tutorial/
-```
+
 
 ## 15.3 IVU.Monitoring: Define testing class in the sepc/classes
 The tests themselves are files with names ending with "`_spec`" and are stored in the "spec" directory. They are usually testing classes and therefore stored in the sub-folder "classes", but rspec-puppet also makes it possible (and recommends) to use separate folders to test, among others, functions and types.
@@ -1312,7 +1450,7 @@ require 'rspec-puppet-facts'
 **rspec-puppet-facts** provides a variable on_supported_os that can be used in tests to loop through the OS versions supported by the module and to get the correct set of facts for each OS version. 
 
 This can be used to write tests for all supported OS versions:
-```
+```ruby
 require 'spec_helper'
  
 describe 'ivu_monitoring', :type => 'class' do
@@ -1330,66 +1468,6 @@ end
 ```
 
 
-## 15.5 Using Hiera in Unit Tests
-
-Hier can be used in unit tests to supply parameters and test against them.
-
-### 15.5.1 To supply parameters:
-1 create a file spec/fixtures/hiera.yaml with the Hiera hirarchy definition
-```
-
----
-:backends:
-  - yaml
-:yaml:
-  :datadir: './spec/fixtures/hiera'
-:hierarchy:
-  - 'default'
-
-```
-
-2 create a file spec/fixtures/hiera/default.yaml with the parameters to be used during the test
-
-```
----
-ivu_monitoring::params::icinga2_version: 1.2.3
-
-```
-
-### 15.5.2 To use hiera in you tests:
-
-1 include the module hiera in your spec_helper.rb:
-```
-...
-require 'hiera'
-...
-
-```
-
-
-2 initialize hiera in your test spec and test against it:
-init_spec 是一个 testing class 的名字 
-
-init_spec.rb
-```
-let(:hiera_config) { 'spec/fixtures/hiera.yaml' }
-hiera = Hiera.new( { :config => 'spec/fixtures/hiera.yaml' } )
-...
-#
-# Versions of installed packages
-#
-case facts[:osfamily]
-   when 'windows'
-     it { is_expected.to contain_package('Icinga 2').with(
-       'ensure' => hiera.lookup('ivu_monitoring::params::icinga2_version', nil, nil),
-     ) }
-   else
-     it { is_expected.to contain_package('icinga2').with(
-       'ensure' => hiera.lookup('ivu_monitoring::params::icinga2_version', nil, nil),
-     ) }
-   end
-end
-```
 
 # 16 Producing coverage reports
 
@@ -1423,9 +1501,32 @@ Resources declared outside of the module being tested (i.e. forge dependencies) 
 
 
 ==report 被输出在哪里？ ==
+在 console output 中， 在 pek test unit 后  
 
+```
 
+Coverage Report:
 
+Total resources:   15
+Touched resources: 1
+Resource coverage:  6.67%
+
+Untouched resources:
+  Chocolateysource[internal_chocolatey_repo]
+  Chocolateysource[nexus-e2-repo-chocolatey_internal]
+  Chocolateysource[public_chocolatey_repo]
+  Dirtree[C:/Users/IVU/AppData/Local/Temp/ivuShellLogging]
+  Exec[17]
+  Exec[wait_time]
+  File[servers_content]
+  File[session_logging_configuration]
+  File[setup_content]
+  File[suitesetup_content]
+  File[variables_content]
+  Package[fitnesse-conf-24.0.0]
+  Package[fitnesse-testcase-24.0.0]
+  Package[openjdk17]
+```
 
 
 
