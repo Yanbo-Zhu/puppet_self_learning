@@ -177,6 +177,70 @@ Puppet URLs work for both `puppet agent` and `puppet apply`; in either case they
 
 To learn more about the `file` function, see the [function reference](https://www.puppet.com/docs/puppet/7/function).
 
+
+## 3.1 例子
+
+1 
+
+Files 文件夹中有这个文件夹 
+ivu_kubernetes/files/common/helm/csi-driver-smb.yam·
+```yaml
+---
+linux:
+  kubelet: "/var/lib/k0s/kubelet"
+```
+
+
+然后再某个 manifests 中有 
+```ruby
+class ivu_kubernetes::extensions::csi_driver_smb (
+  Pattern[/^[0-9]+\.[0-9]+\.[0-9]+$/] $version,
+  Stdlib::Absolutepath                $custom_config_dir,
+) {  ivu_kubernetes::helm::chart { 'csi-driver-smb':
+    chart_ref      => 'csi-driver-smb',
+    repository_url => 'https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts',
+    version        => $version,
+    namespace      => 'kube-system',
+    values_content => file('ivu_kubernetes/common/helm/csi-driver-smb.yaml'),  # 这里 files 就被引用了 
+  }
+```
+
+
+----
+
+2
+
+文件 在ivu_kubernetes/files/common/manifests/kubernetes-dashboard.yaml
+
+
+manifests/extensions/kubernetes_dashboard.pp
+```ruby
+Defaults to lookup('ivu_kubernetes::custom_config_dir').
+class ivu_kubernetes::extensions::kubernetes_dashboard (
+  Boolean                $deploy_admin_user,
+  Optional[Stdlib::Port] $node_port,
+  Stdlib::Absolutepath   $custom_config_dir,
+) {
+  if $node_port == undef {
+    $nodeport_manifest_fragment = ''
+  } else {
+    $nodeport_manifest_fragment = template('ivu_kubernetes/common/manifests/kubernetes-dashboard-nodeport.yaml.erb')
+  }
+  if $deploy_admin_user {
+    $deploy_admin_user_fragment = file('ivu_kubernetes/common/manifests/kubernetes-dashboard-admin-user.yaml')
+  } else {
+    $deploy_admin_user_fragment = ''
+  }
+	  $default_manifest_fragment = file('ivu_kubernetes/common/manifests/kubernetes-dashboard.yaml') # file 被引用了
+  $manifest_content          = "${default_manifest_fragment}\n${nodeport_manifest_fragment}\n${deploy_admin_user_fragment}"
+ 
+  ivu_kubernetes::manifest { 'kubernetes-dashboard':
+    content           => $manifest_content,
+```
+
+
+
+
 # 4 Templates in modules
 
 You can use ERB or EPP templates in your module to manage the content of configuration files. Templates combine code, data, and literal text to produce a string output, which can be used as the content attribute of a `file` resource or as a variable value. 
